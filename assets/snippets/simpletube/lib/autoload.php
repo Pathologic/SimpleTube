@@ -7,8 +7,8 @@ function simpletube_autoload($path) {
         return;
 
     if ($path[0] == "Panorama") {
-        require implode('/', $path).'.php';
-    } else require 'SimpleTube/simpletube.class.php';
+        require_once implode('/', $path).'.php';
+    } else require_once 'SimpleTube/simpletube.class.php';
 
 
 }

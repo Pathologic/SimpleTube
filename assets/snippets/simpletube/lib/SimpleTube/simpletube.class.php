@@ -5,32 +5,22 @@ class SimpleTube extends \Panorama\Video {
 	public $_cfg = array();
 	public $videoDetails = array();
 	public $DLTemplate = null;
+	public $errorMessage = array();
 	
-	public static function getInstance(\DocumentParser $modx) {
-        if (null === self::$instance) {
-            self::$instance = new self($modx);
-        }
-        return self::$instance;
-    }
-
-    private function __clone()
-    {
-
-    }
-
 	public function __construct ($modx, $cfg = array()) {
 		try {
 			if ($modx instanceof \DocumentParser) {
                 $this->modx = $modx;
-                if (!is_array($cfg) || empty($cfg)) $cfg = $this->modx->Event->params;
+                if (!is_array($cfg) || empty($cfg)) $cfg = $this->modx->event->params;
             } else {
-                throw new Exception('MODX var is not instaceof DocumentParser');
+                throw new \Exception('MODX var is not instaceof DocumentParser');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             die($e->getMessage());
         }
         
         //Defaults
+
         $cfg = array_merge(array(
 			'folder' => 'assets/images/video/',
 			'noImage' => 'assets/snippets/simpletube/noimage.png',
@@ -40,25 +30,31 @@ class SimpleTube extends \Panorama\Video {
         
         try {
         	if (!isset ($cfg['input']) || empty($cfg['input'])) 
-        		throw new Exception('Input parameter is empty');
+        		throw new \Exception('Input parameter is empty');
         	parent::__construct($cfg['input']);	
-        } catch (Exception $e) {
-        	die($e->getMessage());
+        } catch (\Exception $e) {
+        	$this->errorMessage[] = $e->getMessage();
         }
-        require_once ('assets/snippets/DocLister/lib/DLTemplate.class.php');
-        require_once ('assets/lib/APIHelpers.class.php');
+        require_once ($this->modx->config['base_path'].'assets/snippets/DocLister/lib/DLTemplate.class.php');
+        require_once ($this->modx->config['base_path'].'assets/lib/APIHelpers.class.php');
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
 	}
 
 	/*Get rid of redundant data*/
 	public function getVideoDetails() {
+		if (!empty($this->errorMessage)) {
+			$this->videoDetails = array (
+				"st_error" => implode(', ',$this->errorMessage)
+			);
+		} else {
 		$this->videoDetails = array(
-            "title"       => (string) $this->getTitle(),
-            "thumbUrl"   => (string) $this->getThumbnail(),
-            "embedUrl"    => (string) $this->getEmbedUrl(),
-            "service"     => (string) $this->getService(),
-            "duration"    => (string) $this->getDuration(),
+            "st_title"       => (string) $this->getTitle(),
+            "st_thumbUrl"   => (string) $this->getThumbnail(),
+            "st_embedUrl"    => (string) $this->getEmbedUrl(),
+            "st_service"     => (string) $this->getService(),
+            "st_duration"    => (string) $this->getDuration(),
         );
+	}
 		$this->saveThumbnail($this->getCFGDef('folder'));
 		return $this->videoDetails;
 	}
@@ -80,22 +76,23 @@ class SimpleTube extends \Panorama\Video {
 
 	public function saveThumbnail ($folder) {
 		$folder .= empty($this->getCFGDef('docId')) ? '' : $this->getCFGDef('docId') . '/';
-		$url = &$this->videoDetails['thumbUrl'];
-		if (empty($url)) $url = $this->getCFGDef('noImage');
+		$url = &$this->videoDetails['st_thumbUrl'];
+		if (empty($url)) return;
 		$filepath = $this->modx->config['base_path'] . $folder;
-		if (!is_dir($filepath)) mkdir($filepath);
+		if (!is_dir($filepath)) mkdir($filepath,intval($this->modx->config['new_folder_permissions'],8),true);
 		$tmp = explode('.', $url);
 		$ext = '.' . end($tmp);
 		$filename = md5($url) . $ext;
-		$image = $folder . $filename;
-		if (!$this->getCFGDef('forceDownload') && file_exists($folder . $filename)) {
+		$image = $filepath . $filename;
+		if (!$this->getCFGDef('forceDownload') && file_exists($image)) {
 			$result = true;
 		} else {
 			$result = false;
 			$response = $this->Curl($url);
 			if (!empty($response)) $result = file_put_contents($image, $response);
 		}	
-		$url = ($result) ? $image : $this->getCFGDef('noImage');
+		
+		if ($result) $url = $folder.$filename;
 	}
 
 	public function Curl($url = '') {

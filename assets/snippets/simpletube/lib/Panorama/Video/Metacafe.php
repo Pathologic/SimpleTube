@@ -75,7 +75,6 @@ class Metacafe implements VideoInterface
                 $this->args = array($args[2], $args[3]);
             }
         }
-
         return $this->args;
 
     }
@@ -106,9 +105,8 @@ class Metacafe implements VideoInterface
     {
         if (!isset($this->thumbnail)) {
             $args = $this->getArgs();
-            $this->thumbnail = "http://www.metacafe.com/thumb/{$args[0]}.jpg";
+            $this->thumbnail = "http://s4.mcstatic.com/thumb/{$args[0]}.jpg";
         }
-
         return $this->thumbnail;
     }
 

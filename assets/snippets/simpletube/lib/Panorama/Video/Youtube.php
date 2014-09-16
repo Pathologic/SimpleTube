@@ -242,6 +242,7 @@ class Youtube  implements VideoInterface
     {
         if (!isset($this->thumbnail)) {
             $thumbnails = $this->getThumbnails();
+            
             $this->thumbnail = (string) $thumbnails[0]->attributes()->url;
         }
 
