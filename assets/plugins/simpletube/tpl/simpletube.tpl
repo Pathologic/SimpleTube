@@ -8,36 +8,36 @@
 
 <style type="text/css">
 #SimpleTube .pagination select, #SimpleTube .pagination input {
-    width:auto;
-    height:auto;
+	width:auto;
+	height:auto;
 }
 #SimpleTube .pagination td {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 .datagrid-view td {
-    padding:0 5px;
+	padding:0 5px;
 }
 .datagrid-toolbar {
-    padding:10px 3px;
+	padding:10px 3px;
 }
 .datagrid-header-inner td {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 #addVideo {
-    padding:0 0 10px;
+	padding:0 0 10px;
 }
 #addVideo a {
-    margin-left:10px;
-    text-decoration: none;
-    display: inline-block;
-    background: linear-gradient(to bottom, #ffffff 0px, #e6e6e6 100%) repeat-x;
+	margin-left:10px;
+	text-decoration: none;
+	display: inline-block;
+	background: linear-gradient(to bottom, #ffffff 0px, #e6e6e6 100%) repeat-x;
     border: 1px solid #bbb;
     border-radius: 5px;
     color:#333;
     padding:3px 5px;
 }
 #addVideo a:hover {
-    background: #e6e6e6;
+	background: #e6e6e6;
     border: 1px solid #ddd;
     color: #00438a;
 }
@@ -87,7 +87,7 @@ $.extend($.fn.datagrid.defaults.editors, {
         },
         setValue: function(target, value){
             $(target).val(value);
-            $(target).parent().find('img').attr('src',this.thumb_prefix+value);
+            $(target).parent().find('img').attr('src',(value == '' ? '[+site_url+][+noImage+]' : this.thumb_prefix+value));
         },
         resize: function(target, width){
             return;
@@ -97,13 +97,13 @@ $.extend($.fn.datagrid.defaults.editors, {
 
 stGridHelper = {
     addRow: function () {
-        var url = $('input','#addVideo').val();
-        if (url != '') {
-          $.ajax({
-              url:'[+url+]?mode=addRow',
-              type: 'post',
-              data: {'stUrl':url, 'st_rid':rid}
-          }).done(function(response) {
+		var url = $('input','#addVideo').val();
+		if (url != '') {
+		  $.ajax({
+		      url:'[+url+]?mode=addRow',
+		      type: 'post',
+		      data: {'stUrl':url, 'st_rid':rid}
+		  }).done(function(response) {
             if (response) {
                 response=$.parseJSON(response);
                 if (!response.success) {
@@ -113,10 +113,10 @@ stGridHelper = {
             }
             $('#stGrid').edatagrid('reload');
             }
-        })
-       }
-        return false;
-    },
+		})
+	   }
+		return false;
+	},
     browse: function(e) {
         var target = e.data.target;
         var field = e.data.field;
@@ -139,7 +139,7 @@ stGridHelper = {
         };
         var oWindow = window.open(url, 'SimpleTube', sOptions);
     },
-    formatTime: function(seconds) {
+	formatTime: function(seconds) {
         if (seconds == 0) return;
         time = new Date(0, 0, 0, 0, 0, seconds, 0);
 
@@ -157,21 +157,21 @@ stGridHelper = {
         output += ('0'+ss).slice(-2);
         return output; 
     },
-    updateActions: function(index){
-            $('#stGrid').edatagrid('updateRow',{
-                index:index,
-                row:{}
-            });
-    },
-    editrow: function(target){
-        $('#stGrid').edatagrid('beginEdit', this.getRowIndex(target));
-    },
-    saverow: function(target){
-        $('#stGrid').edatagrid('endEdit', this.getRowIndex(target));
-    },
-    cancelrow:function(target){
-        $('#stGrid').edatagrid('cancelEdit', this.getRowIndex(target));
-    },
+	updateActions: function(index){
+			$('#stGrid').edatagrid('updateRow',{
+				index:index,
+				row:{}
+			});
+	},
+	editrow: function(target){
+		$('#stGrid').edatagrid('beginEdit', this.getRowIndex(target));
+	},
+	saverow: function(target){
+		$('#stGrid').edatagrid('endEdit', this.getRowIndex(target));
+	},
+	cancelrow:function(target){
+		$('#stGrid').edatagrid('cancelEdit', this.getRowIndex(target));
+	},
     deleteRow: function (target) {
         $('#stGrid').edatagrid('destroyRow', this.getRowIndex(target));
     },
@@ -180,20 +180,20 @@ stGridHelper = {
         return parseInt(tr.attr('datagrid-row-index'));
     },
     initGrid: function () {
-        $('#stGrid').edatagrid({
-            url:'[+url+]',
+    	$('#stGrid').edatagrid({
+    		url:'[+url+]',
             singleSelect:true,
-            destroyUrl:'[+url+]?mode=remove',
+    		destroyUrl:'[+url+]?mode=remove',
             updateUrl:'[+url+]?mode=edit',
             destroyMsg :{confirm:{   // when select a row
                 title:'Удаление записи',
                 msg:'Вы уверены, что хотите удалить запись?'
                 }
             },
-            pagination: true,
+    		pagination: true,
             fitColumns: true,
-            striped: true,
-            idField:'st_id',
+    		striped: true,
+    		idField:'st_id',
             scrollbarSize: 0,
             sortName: 'st_index',
             sortOrder: 'DESC',
@@ -271,17 +271,17 @@ stGridHelper = {
         $('#stGrid').edatagrid('unselectRow',rowIndex);
     },
     onBeforeEdit:function(index,row){
-        row.editing = true;
-        stGridHelper.updateActions(index);
-    },
-    onAfterEdit:function(index,row){
-        row.editing = false;
-        stGridHelper.updateActions(index);
-    },
-    onCancelEdit:function(index,row){
-        row.editing = false;
-        stGridHelper.updateActions(index);
-    },
+		row.editing = true;
+		stGridHelper.updateActions(index);
+	},
+	onAfterEdit:function(index,row){
+		row.editing = false;
+		stGridHelper.updateActions(index);
+	},
+	onCancelEdit:function(index,row){
+		row.editing = false;
+		stGridHelper.updateActions(index);
+	},
     onClickRow: function (row) { 
         row.editing = false;
         $('#stGrid').edatagrid('cancelEdit', row);
@@ -305,7 +305,7 @@ stGridHelper = {
             width:([+w+]+10),
             fixed: true,
             formatter: function(value,row,index){
-                return '<img style="width:[+w+]px;height:[+h+]px;padding:3px 0;" src="[+thumb_prefix+]'+value+'">';
+                return '<img style="width:[+w+]px;height:[+h+]px;padding:3px 0;" src="'+(value == '' ? '[+site_url+][+noImage+]' : '[+thumb_prefix+]'+value)+'">';
             }, 
             editor: {
                 type: 'imageBrowser',

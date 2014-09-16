@@ -34,6 +34,7 @@ class stPlugin {
 		$createTable = isset($this->params['createTable']) ? $this->params['createTable'] : 'No';
 		$w = isset($this->params['w']) ? $this->params['w'] : '107';
 		$h = isset($this->params['h']) ? $this->params['h'] : '80';
+		$noImage = isset($this->params['noImage']) ? $this->params['noImage'] : 'assets/snippets/simpletube/noimage.png';
 		if ($createTable == 'Yes') {
 			$output = '<script type="text/javascript">alert("';
 			if ($this->createTable()) {
@@ -57,16 +58,17 @@ class stPlugin {
 			return false;
 		}
 		$ph = array(
-			'jquery'	=>	$jquery,
-			'id'		=>	$this->params['id'],
-			'url'		=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php',
-			'theme'		=>  $this->modx->config['manager_theme'],
-			'tabName'	=>	$this->params['tabName'],
-			'site_url'	=>	$this->modx->config['site_url'],
-			'thumb_prefix' => $this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php?mode=thumb&url=',
-			'kcfinder_url'	=> MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
-			'w' => $w,
-			'h' => $h
+			'jquery'		=>	$jquery,
+			'id'			=>	$this->params['id'],
+			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php',
+			'theme'			=>  $this->modx->config['manager_theme'],
+			'tabName'		=>	$this->params['tabName'],
+			'site_url'		=>	$this->modx->config['site_url'],
+			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php?mode=thumb&url=',
+			'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
+			'w' 			=> 	$w,
+			'h' 			=> 	$h,
+			'noImage' 		=> 	$noImage
 			);
 		$output = $this->DLTemplate->parseChunk('@CODE:'.$tpl,$ph);
 		return $output; 
