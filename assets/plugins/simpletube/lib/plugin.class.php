@@ -14,6 +14,7 @@ class stPlugin {
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
         
     }
+    
     public function render() {
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
 		$roles = isset($this->params['roles']) ? explode(',',$this->params['roles']) : false;

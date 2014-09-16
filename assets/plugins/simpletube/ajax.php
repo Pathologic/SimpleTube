@@ -27,6 +27,8 @@ switch ($mode) {
 	case 'addRow' :
 		if (!$rid) die();
 		$url = isset($_REQUEST['stUrl']) ? $_REQUEST['stUrl'] : '';
+		$url = explode('&',$url);
+		$url = $url[0];
 		if (empty($url)) {
 			$out['success'] = false;
 			$out['message'] = "Неверный URL";
@@ -80,11 +82,13 @@ switch ($mode) {
 		} else {
 			die();}
 		$new = array();
-		$checkUrl = ($origin['st_videoUrl'] == $_REQUEST['st_videoUrl']);
+		$url = explode('&',$_REQUEST['st_videoUrl']);
+		$url = $url[0];
+		$checkUrl = ($origin['st_videoUrl'] == $url);
 		$checkThumb = ($origin['st_thumbUrl'] == $_REQUEST['st_thumbUrl']);
 		if (!$checkUrl) {
-			$fields = $modx->runSnippet('SimpleTube',array('input'=>$_REQUEST['st_videoUrl'],'api'=>'2','docId'=>$origin['st_rid']));
-			$new['st_videoUrl'] = $_REQUEST['st_videoUrl'];
+			$fields = $modx->runSnippet('SimpleTube',array('input'=>$url,'api'=>'2','docId'=>$origin['st_rid']));
+			$new['st_videoUrl'] = $url;
 		}
 		if (!$checkThumb) {
 			$source = realpath(MODX_BASE_PATH.$_REQUEST['st_thumbUrl']);
