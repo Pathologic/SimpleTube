@@ -14,7 +14,18 @@ class stPlugin {
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
         
     }
-    
+
+    public function clearFolders($ids, $folder) {
+		foreach ($ids as $id) $this->rmDir($folder.$id.'/');
+    }
+
+    public function rmDir($dirPath) {
+    	foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
+    		$path->isDir() ? rmdir($path->getPathname()) : unlink($path->getPathname());
+		}
+		rmdir($dirPath);
+    }
+	    
     public function render() {
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
 		$roles = isset($this->params['roles']) ? explode(',',$this->params['roles']) : false;
