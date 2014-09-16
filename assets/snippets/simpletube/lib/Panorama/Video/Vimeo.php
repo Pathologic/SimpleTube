@@ -49,7 +49,7 @@ class Vimeo implements VideoInterface
                 "http://vimeo.com/api/v2/video/" . $videoId . ".php"
             );
             if (!$document) {
-                throw new \Exception('Video Id not valid.');
+                throw new \Exception('Не удалось определить видео.');
             }
             $information = unserialize($document);
             $this->feed = $information[0];
@@ -219,11 +219,11 @@ class Vimeo implements VideoInterface
                     if (count($pathParts) > 0) {
                         $this->videoId = $pathParts[1];
                     } else {
-                        throw \Exception("The path {$url} sems to be invalid");
+                        throw \Exception("Не удалось определить видео.");
                     }
                 }
             } catch (Exception $e) {
-                throw \Exception("The path {$url} sems to be invalid");
+                throw \Exception("Не удалось определить видео.");
             }
         }
 

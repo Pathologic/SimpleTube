@@ -23,14 +23,20 @@ class SimpleTube extends \Panorama\Video {
 
         $cfg = array_merge(array(
 			'folder' => 'assets/images/video/',
-			'noImage' => 'assets/snippets/simpletube/noimage.png',
 			'forceDownload' => false
 		),$cfg);
         $this->_cfg = $cfg;
         
         try {
         	if (!isset ($cfg['input']) || empty($cfg['input'])) 
-        		throw new \Exception('Input parameter is empty');
+        		throw new \Exception('Нет ссылки для обработки.');
+
+        	/* https://gist.github.com/dperini/729294 */
+        	$pattern = "@^(https?|ftp)://[^\s/$.?#].[^\s]*$@iS";
+        	if (!preg_match($pattern, $cfg['input'],$match)) {
+           		throw new \Exception('Такие ссылки не поддерживаются.');
+        	}
+
         	parent::__construct($cfg['input']);	
         } catch (\Exception $e) {
         	$this->errorMessage[] = $e->getMessage();
@@ -75,7 +81,7 @@ class SimpleTube extends \Panorama\Video {
 	}
 
 	public function saveThumbnail ($folder) {
-		$folder .= empty($this->getCFGDef('docId')) ? '' : $this->getCFGDef('docId') . '/';
+		$folder .= empty($this->getCFGDef('docId')) ? '' : $this->getCFGDef('rid') . '/';
 		$url = &$this->videoDetails['st_thumbUrl'];
 		if (empty($url)) return;
 		$filepath = $this->modx->config['base_path'] . $folder;

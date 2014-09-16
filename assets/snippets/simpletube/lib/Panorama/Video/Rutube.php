@@ -33,7 +33,7 @@ class Rutube implements VideoInterface
         $this->url = $url;
         $this->options = $options;
         if (!($this->videoId = $this->getvideoId())) {
-            throw new \Exception("Video ID not valid.", 1);
+            throw new \Exception("Не удалось определить видео.", 1);
         }
         $this->getRtInfo();
     }
@@ -144,7 +144,7 @@ class Rutube implements VideoInterface
         if (!isset($this->rtInfo)) {
             $content = @file_get_contents($url);
             if (!$content) {
-                throw new \Exception('Video Id not valid.');
+                throw new \Exception('Не удалось определить видео.');
             }
             $this->rtInfo = json_decode($content);
         }

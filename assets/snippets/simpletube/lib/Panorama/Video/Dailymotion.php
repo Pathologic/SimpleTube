@@ -194,7 +194,7 @@ class Dailymotion implements VideoInterface
             if (count($matches) > 0) {
                 $this->videoId = $matches[1];
             } else {
-                throw new \Exception("This url doesn't seem to be a Dailymotion video url");
+                throw new \Exception("Не удалось определить видео.");
             }
         }
 

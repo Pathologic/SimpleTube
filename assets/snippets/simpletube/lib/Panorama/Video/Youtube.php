@@ -30,7 +30,7 @@ class Youtube  implements VideoInterface
         $this->url = $url;
         $this->options = $options;
         if (!($this->videoId = $this->getvideoId())) {
-            throw new \Exception("Video ID not valid.", 1);
+            throw new \Exception("Не удалось определить видео.", 1);
         }
         $this->getFeed();
 
@@ -49,7 +49,7 @@ class Youtube  implements VideoInterface
                 "http://gdata.youtube.com/feeds/api/videos/{$videoId}"
             );
             if (!$document) {
-                throw new \Exception('Video Id not valid.');
+                throw new \Exception('Не удалось определить видео.');
             }
             $this->feed = new \SimpleXMLElement($document);
         }
