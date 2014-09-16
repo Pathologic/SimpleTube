@@ -114,8 +114,8 @@ switch ($mode) {
 			}
 		}
 		$new['st_title'] = $checkUrl ? $_REQUEST['st_title'] : $fields['st_title'];
-		$new['st_isactive'] = ($fields['st_isactive'] != $_REQUEST['st_isactive']) ? 1 : 0;
 		$new['st_thumbUrl'] = $checkUrl ? $_REQUEST['st_thumbUrl'] : $fields['st_thumbUrl'];
+		$new['st_isactive'] = (int)!!$_REQUEST['st_isactive'];
 		$new['st_index'] = (int)$_REQUEST['st_index'];
 		if($data->fromArray($new)->save()) {
 			if (!$checkUrl || !$checkThumb) $data->deleteThumb($origin['st_thumbUrl']);
