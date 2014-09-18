@@ -33,7 +33,7 @@ switch ($mode) {
 			$out['success'] = false;
 			$out['message'] = "Неверный URL";
 		} elseif ($data->isUnique($url,$rid)) {
-			$params = array('input' => $url, 'api'=> '2', 'docId' => $rid);
+			$params = array('input' => $url, 'api'=> '2', 'rid' => $rid);
 			$thumbsCache = 'assets/.stThumbs/';
 			$w = 107;
 			$h = 80;
