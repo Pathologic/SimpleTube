@@ -268,169 +268,22 @@ stGridHelper = {
                 response=$.parseJSON(response);
                 if (!response.success) {
                     $.messager.alert('Ошибка',response.message);
+                    $('#stGrid').edatagrid('reload');
                 } else { 
-                if (targetRow.st_index > sourceRow.st_index )  {
                     rows = $('#stGrid').edatagrid('getRows');
-                    if (point == 'top' && stOrderDir == 'desc') {
-                        save = rows[tgt+1].st_index;
-                        for (var i=tgt+1;i<=src;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: rows[i].st_index - 1
-                                }
-                            });
+                    if (tgt < src) {
+                        rows[tgt].st_index = targetRow.st_index;
+                        for (var i = tgt;i<=src;i++) {
+                            rows[i].st_index = rows[i-1] != undefined ? rows[i-1].st_index - (stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
+                            $('#stGrid').edatagrid('refreshRow',i);
                         }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-
-                    } else if (point == 'bottom' && stOrderDir == 'desc') {
-                        //debugger;
-                        save = rows[tgt+2].st_index;
-                        for (var i=tgt+1;i<=src;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: rows[i].st_index - 1
-                                }
-                            });
+                    } else {
+                        rows[tgt].st_index = targetRow.st_index;
+                        for (var i = tgt;i>=src;i--) {
+                            rows[i].st_index = rows[i+1] != undefined ? parseInt(rows[i+1].st_index) + (stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
+                            $('#stGrid').edatagrid('refreshRow',i);
                         }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt+1,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-                    } 
-                } else { 
-                   rows = $('#stGrid').edatagrid('getRows');
-                    if (point == 'bottom' && stOrderDir == 'desc') {
-                        save = rows[tgt-1].st_index;
-                        for (var i=src;i<tgt;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: parseInt(rows[i].st_index)+1
-                                }
-                            });
-                        }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-
-                    } else if (point == 'top' && stOrderDir == 'desc') {
-                        //debugger;
-                        save = rows[tgt-2].st_index;
-                        for (var i=src;i<tgt;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: parseInt(rows[i].st_index) + 1
-                                }
-                            });
-                        }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt-1,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-                    } 
-                }
-
-                if (targetRow.st_index > sourceRow.st_index )  {
-                    rows = $('#stGrid').edatagrid('getRows');
-                    if (point == 'bottom' && stOrderDir == 'asc') {
-                        //debugger;
-                        save = rows[tgt-1].st_index;
-                        for (var i=src;i<=tgt;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: rows[i].st_index - 1
-                                }
-                            });
-                        }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-
-                    } else if (point == 'top' && stOrderDir == 'asc') {
-                        //debugger;
-                        save = rows[tgt-2].st_index;
-                        for (var i=src;i<=tgt-1;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: rows[i].st_index - 1
-                                }
-                            });
-                        }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt-1,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-                    } 
-                } else { 
-                   rows = $('#stGrid').edatagrid('getRows');
-                    if (point == 'bottom' && stOrderDir == 'asc') {
-                        //debugger;
-                        save = rows[tgt+2].st_index;
-                        for (var i=tgt+1;i<=src;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: parseInt(rows[i].st_index)+1
-                                }
-                            });
-                        }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt+1,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-
-                    } else if (point == 'top' && stOrderDir == 'asc') {
-                        //debugger;
-                        save = rows[tgt+1].st_index;
-                        for (var i=tgt;i<=src;i++) {
-                            $('#stGrid').edatagrid('updateRow',{
-                                index: i,
-                                row: {
-                                    st_index: parseInt(rows[i].st_index) + 1
-                                }
-                            });
-                        }
-
-                        $('#stGrid').edatagrid('updateRow',{
-                                index: tgt,
-                                row: {
-                                    st_index: save
-                                }
-                        });
-                    } 
-                }
-
+                    }
                     tr.addClass('droppable');
                 }
             }
