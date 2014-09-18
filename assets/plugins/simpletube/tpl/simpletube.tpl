@@ -312,7 +312,7 @@ stGridHelper = {
         row.editing = false;
         $('#stGrid').edatagrid('cancelEdit', row);
     },
-    columns:[[
+    columns:[ [
         {
             field:'st_index',
             title: '#',
@@ -432,7 +432,7 @@ stGridHelper = {
 
             }
         }
-    ]]
+    ] ]
 })
 } //end initGrid
 }  //end stGridHelper 
