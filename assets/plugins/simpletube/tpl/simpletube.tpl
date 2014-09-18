@@ -235,11 +235,12 @@ stGridHelper = {
         $('body').css('overflow-x','auto');
         $('.datagrid-body').css('overflow-y','auto');
         this.targetRow = targetRow;
-        this.targetRow.index = $('#stGrid').edatagrid('getRowIndex',targetRow);
+        this.targetRow.index = tgt = $('#stGrid').edatagrid('getRowIndex',targetRow);
         this.sourceRow = sourceRow;
-        this.sourceRow.index = $('#stGrid').edatagrid('getRowIndex',sourceRow);
+        this.sourceRow.index = src = $('#stGrid').edatagrid('getRowIndex',sourceRow);
         this.point = point;
-        
+        dif = tgt-src;
+        if ((point == 'bottom' && dif == -1) || (point == 'top' && dif == 1)) return false;
     },
     onDrop:function(targetRow,sourceRow,point) {
         src = this.sourceRow.index;
