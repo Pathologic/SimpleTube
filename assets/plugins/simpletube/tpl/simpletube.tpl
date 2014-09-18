@@ -451,6 +451,7 @@ $('#st-tab').click(function(){
     } else {
         $('#SimpleTube').append(
             '<div id="addVideo">' +
+            '<label><b>Ссылка на видео:</b></label><br>' +
             '<input name="stUrl"><a href="javascript:void(0)" onclick="stGridHelper.addRow();">Добавить</a>' +
             '</div>' +
             '<table id="stGrid" width="100%"></table>'
