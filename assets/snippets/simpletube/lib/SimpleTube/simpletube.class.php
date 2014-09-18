@@ -57,7 +57,7 @@ class SimpleTube extends \Panorama\Video {
 		$this->videoDetails = array(
             "st_title"       => (string) $this->getTitle(),
             "st_thumbUrl"   => (string) $this->getThumbnail(),
-            "st_embedUrl"    => (string) $this->getEmbedUrl(),
+            "st_embedUrl"    => array_shift(explode('?',(string) $this->getEmbedUrl())),
             "st_service"     => (string) $this->getService(),
             "st_duration"    => (string) $this->getDuration(),
         );
