@@ -1,10 +1,5 @@
-[+jquery+]
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simpletube/js/easy-ui/themes/bootstrap/easyui.css">
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simpletube/js/easy-ui/themes/icon.css">
-<script type="text/javascript" src="[+site_url+]assets/plugins/simpletube/js/easy-ui/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simpletube/js/easy-ui/plugins/jquery.datagrid-dnd.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simpletube/js/easy-ui/plugins/jquery.edatagrid.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simpletube/js/easy-ui/locale/easyui-lang-ru.js"></script>
 
 <style type="text/css">
 #SimpleTube .pagination select, #SimpleTube .pagination input {

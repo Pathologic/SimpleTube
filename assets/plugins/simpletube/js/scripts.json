@@ -1,0 +1,16 @@
+{
+	"scripts": {
+		"EasyUI" : {
+			"version":"1.4",
+			"src":"assets/plugins/simplegallery/js/easy-ui/jquery.easyui.min.js"
+		},
+		"datagrid-dnd" : {
+				"version":"1.4",
+				"src":"assets/plugins/simpletube/js/easy-ui/plugins/jquery.datagrid-dnd.js"
+		},
+		"edatagrid" : {
+			"version":"1.4",
+			"src":"assets/plugins/simpletube/js/easy-ui/plugins/jquery.edatagrid.js"
+		}
+	}
+}

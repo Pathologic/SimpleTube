@@ -7,9 +7,11 @@ class stPlugin {
 	public $modx = null;
 	public $params = array();
 	public $DLTemplate = null;
+	public $lang_attribute = '';
 	
-	public function __construct($modx, $debug = false) {
+	public function __construct($modx, $lang_attribute = 'en', $debug = false) {
         $this->modx = $modx;
+        $this->lang_attribute = $lang_attribute;
         $this->params = $modx->event->params;
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
         
@@ -48,7 +50,7 @@ class stPlugin {
 		
 		$plugins = $this->modx->pluginEvent;
 		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false) {
-			$jquery = '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/js/jquery.min.js"></script>';
+			$js = '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/js/jquery.min.js"></script>';
 		}
 		
 		$tpl = MODX_BASE_PATH.'assets/plugins/simpletube/tpl/simpletube.tpl';
@@ -58,7 +60,6 @@ class stPlugin {
 			return false;
 		}
 		$ph = array(
-			'jquery'		=>	$jquery,
 			'id'			=>	$this->params['id'],
 			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php',
 			'theme'			=>  $this->modx->config['manager_theme'],
@@ -71,7 +72,26 @@ class stPlugin {
 			'h' 			=> 	$h,
 			'noImage' 		=> 	$noImage
 			);
-		$output = $this->DLTemplate->parseChunk('@CODE:'.$tpl,$ph);
+		$scripts = MODX_BASE_PATH.'assets/plugins/simpletube/js/scripts.json';
+		if(file_exists($scripts)) {
+			$scripts = @file_get_contents($scripts);
+			$scripts = json_decode($scripts,true);
+			foreach ($scripts['scripts'] as $name => $params) {
+				if (!isset($this->modx->loadedjscripts[$name])) {
+					$this->modx->loadedjscripts[$name] = array('version'=>$params['version']);
+					$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$params['src'].'"></script>';
+				};
+			}
+		}
+
+		$easyuiLangJs = 'assets/plugins/simpletube/js/easy-ui/locale/easyui-lang-'.$this->lang_attribute.'.js';
+		if(file_exists(MODX_BASE_PATH.$easyuiLangJs)) {
+			if (!isset($this->modx->loadedjscripts['easyui-lang-'.$this->lang_attribute])) {
+				$this->modx->loadedjscripts['easyui-lang-'.$this->lang_attribute] = array('version'=>'1.4');
+				$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$easyuiLangJs.'"></script>';
+			}
+		}
+		$output = $this->DLTemplate->parseChunk('@CODE:'.$js.$tpl,$ph);
 		return $output; 
     }
     public function createTable() {
