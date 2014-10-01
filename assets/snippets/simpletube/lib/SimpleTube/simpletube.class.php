@@ -83,7 +83,8 @@ class SimpleTube extends \Panorama\Video {
 	}
 
 	public function saveThumbnail ($folder) {
-		$folder .= empty($this->getCFGDef('rid')) ? '' : $this->getCFGDef('rid') . '/';
+		$rid = $this->getCFGDef('rid');
+		$folder .= empty($rid) ? '' : $rid . '/';
 		$url = &$this->videoDetails['st_thumbUrl'];
 		if (empty($url)) return;
 		$filepath = $this->modx->config['base_path'] . $folder;
