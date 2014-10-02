@@ -24,7 +24,7 @@ class stData extends \autoTable {
 
 	public function __construct($modx, $debug = false) {
 		parent::__construct($modx, $debug);
-        $this->_table = $this->makeTable($this->table);
+        $this->_table['st_videos'] = $this->makeTable($this->table);
         $this->modx = $modx;
         $this->params = $modx->event->params;
 	}
@@ -33,7 +33,7 @@ class stData extends \autoTable {
 		if (!is_int($ids)) return; //yet only single id to delete;
 		$fields = $this->edit($ids)->toArray();
 		$out = parent::delete($ids);
-		$rows = $this->modx->db->update( '`st_index`=`st_index`-1', $this->_table, '`st_rid`='.($fields['st_rid'] ? $fields['st_rid'] : 0).' AND `st_id` > ' . $ids);
+		$rows = $this->modx->db->update( '`st_index`=`st_index`-1', $this->_table['st_videos'], '`st_rid`='.($fields['st_rid'] ? $fields['st_rid'] : 0).' AND `st_id` > ' . $ids);
 		$this->deleteThumb($fields['st_thumbUrl']);
 		return $out;
 	}
@@ -41,7 +41,7 @@ class stData extends \autoTable {
 	public function deleteThumb($url, $cache = false) {
 		if (empty($url)) return;
 		if (!$cache) {
-			$rows = $this->modx->db->select("`st_thumbUrl`",$this->_table,"`st_thumbUrl`='$url'");
+			$rows = $this->modx->db->select("`st_thumbUrl`",$this->_table['st_videos'],"`st_thumbUrl`='$url'");
 			if ($this->modx->db->getRecordCount($rows)) return;
 		}
 		$thumb = $this->modx->config['base_path'].$url;
@@ -72,19 +72,19 @@ class stData extends \autoTable {
 		/* more refactoring  needed */
 		if ($target['st_index'] < $source['st_index']) {
 			if (($point == 'top' && $orderDir == 'asc') || ($point == 'bottom' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`+1',$this->_table,'`st_index`>='.$targetIndex.' AND `st_index`<'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.$targetIndex,$this->_table,'`st_id`='.$sourceId);				
+				$rows = $this->modx->db->update('`st_index`=`st_index`+1',$this->_table['st_videos'],'`st_index`>='.$targetIndex.' AND `st_index`<'.$sourceIndex.' AND `st_rid`='.$rid);
+				$rows = $this->modx->db->update('`st_index`='.$targetIndex,$this->_table['st_videos'],'`st_id`='.$sourceId);				
 			} elseif (($point == 'bottom' && $orderDir == 'asc') || ($point == 'top' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`+1',$this->_table,'`st_index`>'.$targetIndex.' AND `st_index`<'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.(1+$targetIndex),$this->_table,'`st_id`='.$sourceId);				
+				$rows = $this->modx->db->update('`st_index`=`st_index`+1',$this->_table['st_videos'],'`st_index`>'.$targetIndex.' AND `st_index`<'.$sourceIndex.' AND `st_rid`='.$rid);
+				$rows = $this->modx->db->update('`st_index`='.(1+$targetIndex),$this->_table['st_videos'],'`st_id`='.$sourceId);				
 			}
 		} else {
 			if (($point == 'bottom' && $orderDir == 'asc') || ($point == 'top' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`-1',$this->_table,'`st_index`<='.$targetIndex.' AND `st_index`>'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.$targetIndex,$this->_table,'`st_id`='.(int)$source['st_id']);				
+				$rows = $this->modx->db->update('`st_index`=`st_index`-1',$this->_table['st_videos'],'`st_index`<='.$targetIndex.' AND `st_index`>'.$sourceIndex.' AND `st_rid`='.$rid);
+				$rows = $this->modx->db->update('`st_index`='.$targetIndex,$this->_table['st_videos'],'`st_id`='.(int)$source['st_id']);				
 			} elseif (($point == 'top' && $orderDir == 'asc') || ($point == 'bottom' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`-1',$this->_table,'`st_index`<'.$targetIndex.' AND `st_index`>'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.(-1+$targetIndex),$this->_table,'`st_id`='.$sourceId);				
+				$rows = $this->modx->db->update('`st_index`=`st_index`-1',$this->_table['st_videos'],'`st_index`<'.$targetIndex.' AND `st_index`>'.$sourceIndex.' AND `st_rid`='.$rid);
+				$rows = $this->modx->db->update('`st_index`='.(-1+$targetIndex),$this->_table['st_videos'],'`st_id`='.$sourceId);				
 			}
 		}
 		
@@ -94,13 +94,13 @@ class stData extends \autoTable {
 	public function isUnique($url,$rid) {
         $url = $this->modx->db->escape($url);
         $rid = (int)$rid;
-        $rows = $this->modx->db->select("`st_id`",$this->_table,"`st_videoUrl`='$url' AND `st_rid`=$rid");
+        $rows = $this->modx->db->select("`st_id`",$this->_table['st_videos'],"`st_videoUrl`='$url' AND `st_rid`=$rid");
         return !$this->modx->db->getRecordCount($rows);
     }
 
 	public function save($fire_events = null, $clearCache = false) {
 		if ($this->newDoc) {
-			$rows = $this->modx->db->select('`st_id`', $this->_table, '`st_rid`='.$this->field['st_rid']);
+			$rows = $this->modx->db->select('`st_id`', $this->_table['st_videos'], '`st_rid`='.$this->field['st_rid']);
 			$this->field['st_index'] = $this->modx->db->getRecordCount($rows);
 			$this->field['st_createdon'] = date('Y-m-d H:i:s');
 		}
