@@ -1,0 +1,14 @@
+{
+	"table": "st_videos",
+	"idField": "st_id",
+	"parentField" : "st_rid",
+	"idType": "parents",
+	"ignoreEmpty": "1",
+	"orderBy": "st_index DESC",
+	"prepare": "",
+	"addWhereList" : "`st_isactive`=1",
+	"thumbOptions" : "w=320&h=240&far=C",
+	"imageField" : "st_thumbUrl",
+	"titleField" : "st_title",
+	"noneWrapOuter" : "0"
+}
