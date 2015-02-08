@@ -223,7 +223,7 @@ stGridHelper = {
                     if (tgt < src) {
                         rows[tgt].st_index = targetRow.st_index;
                         for (var i = tgt;i<=src;i++) {
-                            rows[i].st_index = rows[i-1] != undefined ? rows[i-1].st_index - (stconfig.stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
+                            rows[i].st_index = rows[i-1] != undefined ? rows[i-1].st_index - (stConfig.stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
                             $('#stGrid').edatagrid('refreshRow',i);
                         }
                     } else {
@@ -233,7 +233,6 @@ stGridHelper = {
                             $('#stGrid').edatagrid('refreshRow',i);
                         }
                     }
-                    tr.addClass('droppable');
                 }
             }
         })
@@ -248,14 +247,10 @@ stGridHelper = {
     onAfterEdit:function(index,row){
         row.editing = false;
         stGridHelper.updateActions(index);
-        state = $.data(this, 'datagrid');
-        $('tr',state.dc.body2).addClass('droppable');
     },
     onCancelEdit:function(index,row){
         row.editing = false;
         stGridHelper.updateActions(index);
-        state = $.data(this, 'datagrid');
-        $('tr',state.dc.body2).addClass('droppable');
     },
     onClickRow: function (row) { 
         row.editing = false;
