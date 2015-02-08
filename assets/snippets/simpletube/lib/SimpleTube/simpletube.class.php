@@ -21,12 +21,11 @@ class SimpleTube extends \Panorama\Video {
         
         //Defaults
 
-        $cfg = array_merge(array(
+        $this->_cfg = array_merge(array(
 			'folder' => 'assets/images/video/',
 			'noImage' => 'assets/snippets/simpletube/noimage.png',
 			'forceDownload' => false
 		),$cfg);
-        $this->_cfg = $cfg;
         
         try {
         	if (!isset ($cfg['input']) || empty($cfg['input'])) 

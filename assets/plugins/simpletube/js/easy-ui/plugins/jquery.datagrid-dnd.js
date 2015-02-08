@@ -272,6 +272,11 @@
 						$.map(rows, function(row){
 							row._selected = true;
 						});
+						if (!rows.length){
+							var row = opts.finder.getRow(target, $(tr));
+							row._selected = false;
+							return row;
+						}
 						return rows;
 					} else {
 						var row = opts.finder.getRow(target, $(tr));

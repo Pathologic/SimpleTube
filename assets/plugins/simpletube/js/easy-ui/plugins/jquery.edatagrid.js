@@ -12,6 +12,14 @@
  * 
  */
 (function($){
+	// var oldLoadDataMethod = $.fn.datagrid.methods.loadData;
+	// $.fn.datagrid.methods.loadData = function(jq, data){
+	// 	jq.each(function(){
+	// 		$.data(this, 'datagrid').filterSource = null;
+	// 	});
+	// 	return oldLoadDataMethod.call($.fn.datagrid.methods, jq, data);
+	// };
+
 	var currTarget;
 	$(function(){
 		$(document).unbind('.edatagrid').bind('mousedown.edatagrid', function(e){
@@ -43,7 +51,7 @@
 			onDblClickCell:function(index,field,value){
 				if (opts.editing){
 					$(this).edatagrid('editRow', index);
-					focusEditor(field);
+					focusEditor(target, field);
 				}
 				if (opts.onDblClickCell){
 					opts.onDblClickCell.call(target, index, field, value);
@@ -52,7 +60,7 @@
 			onClickCell:function(index,field,value){
 				if (opts.editing && opts.editIndex >= 0){
 					$(this).edatagrid('editRow', index);
-					focusEditor(field);
+					focusEditor(target, field);
 				}
 				if (opts.onClickCell){
 					opts.onClickCell.call(target, index, field, value);
@@ -106,32 +114,15 @@
 			},
 			onBeforeLoad: function(param){
 				if (opts.onBeforeLoad.call(target, param) == false){return false}
-				// $(this).edatagrid('cancelRow');
+				$(this).edatagrid('cancelRow');
 				if (opts.tree){
 					var node = $(opts.tree).tree('getSelected');
 					param[opts.treeParentField] = node ? node.id : undefined;
 				}
-			},
-			view: $.extend({}, opts.view, {
-				onBeforeRender: function(target, rows){
-					$(target).edatagrid('cancelRow');
-					opts.view.onBeforeRender.call(this, target, rows);
-				}
-			})
+			}
 		}));
 		
 		
-		function focusEditor(field){
-			var editor = $(target).datagrid('getEditor', {index:opts.editIndex,field:field});
-			if (editor){
-				editor.target.focus();
-			} else {
-				var editors = $(target).datagrid('getEditors', opts.editIndex);
-				if (editors.length){
-					editors[0].target.focus();
-				}
-			}
-		}
 		
 		if (opts.tree){
 			$(opts.tree).tree({
@@ -156,6 +147,27 @@
 					});
 				}
 			});
+		}
+	}
+
+	function focusEditor(target, field){
+		var opts = $(target).edatagrid('options');
+		var t;
+		var editor = $(target).datagrid('getEditor', {index:opts.editIndex,field:field});
+		if (editor){
+			t = editor.target;
+		} else {
+			var editors = $(target).datagrid('getEditors', opts.editIndex);
+			if (editors.length){
+				t = editors[0].target;
+			}
+		}
+		if (t){
+			if ($(t).hasClass('textbox-f')){
+				$(t).textbox('textbox').focus();
+			} else {
+				$(t).focus();					
+			}
 		}
 	}
 	
@@ -193,6 +205,12 @@
 			var opts = $.data(jq[0], 'edatagrid').options;
 			return opts;
 		},
+		loadData: function(jq, data){
+			return jq.each(function(){
+				$(this).edatagrid('cancelRow');
+				$(this).datagrid('loadData', data);
+			});
+		},
 		enableEditing: function(jq){
 			return jq.each(function(){
 				var opts = $.data(this, 'edatagrid').options;
@@ -223,6 +241,7 @@
 						dg.datagrid('endEdit', editIndex);
 						dg.datagrid('beginEdit', index);
 						opts.editIndex = index;
+						focusEditor(this);
 						
 						if (currTarget != this && $(currTarget).length){
 							$(currTarget).edatagrid('saveRow');

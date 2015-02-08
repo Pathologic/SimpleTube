@@ -1,69 +1,15 @@
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simpletube/js/easy-ui/themes/bootstrap/easyui.css">
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simpletube/js/easy-ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="[+site_url+]assets/lib/SimpleTab/js/easy-ui/themes/bootstrap/easyui.css">
+<link rel="stylesheet" type="text/css" href="[+site_url+]assets/lib/SimpleTab/js/easy-ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simpletube/css/simpletube.css">
 
-<style type="text/css">
-#SimpleTube .pagination select, #SimpleTube .pagination input {
-    width:auto;
-    height:auto;
-}
-#SimpleTube .pagination td {
-    vertical-align: middle;
-}
-.datagrid-view td {
-    padding:0 5px;
-}
-.datagrid-toolbar {
-    padding:10px 3px;
-}
-.datagrid-header-inner td {
-    vertical-align: middle;
-}
-#addVideo {
-    padding:0 0 10px;
-}
-#addVideo a {
-    margin-left:10px;
-    text-decoration: none;
-    display: inline-block;
-    background: linear-gradient(to bottom, #ffffff 0px, #e6e6e6 100%) repeat-x;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    color:#333;
-    padding:3px 5px;
-}
-#addVideo a:hover {
-    background: #e6e6e6;
-    border: 1px solid #ddd;
-    color: #00438a;
-}
-.datagrid-cell-c1-st_title {
-    white-space:normal !important;
-}
-.datagrid-cell-c1-st_isactive input[type="checkbox"] {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-.row-top td{
-    border-top:1px solid red;
-    background:#fff;
-}
-.row-bottom td{
-    border-bottom:1px solid red;
-    background:#fff;
-}
-.row-append td{
-    border:0;
-    background:#FBEC88;
-}
-</style>
 <script type="text/javascript">
-var rid = [+id+],
-    stGridLoaded = false,
-    stOrderBy = 'st_index',
-    stOrderDir = 'desc';
+var stConfig = {
+    rid:[+id+],
+    stGridLoaded:false,
+    stOrderBy:'st_index',
+    stOrderDir:'desc'
+};
 (function($){
-
 $.extend($.fn.datagrid.defaults.editors, {
     imageBrowser: {
         thumb_prefix: '',
@@ -100,7 +46,7 @@ stGridHelper = {
           $.ajax({
               url:'[+url+]?mode=addRow',
               type: 'post',
-              data: {'stUrl':url, 'st_rid':rid}
+              data: {'stUrl':url, 'st_rid':stConfig.rid}
           }).done(function(response) {
             if (response) {
                 response=$.parseJSON(response);
@@ -178,6 +124,13 @@ stGridHelper = {
         return parseInt(tr.attr('datagrid-row-index'));
     },
     initGrid: function () {
+        $('#SimpleTube').append(
+                '<div id="addVideo">' +
+                '<label><b>Ссылка на видео:</b></label><br>' +
+                '<input name="stUrl"><a href="javascript:void(0)" onclick="stGridHelper.addRow();">Добавить</a>' +
+                '</div>' +
+                '<table id="stGrid" width="100%"></table>'
+        );
         $('#stGrid').edatagrid({
             url:'[+url+]',
             singleSelect:true,
@@ -195,19 +148,19 @@ stGridHelper = {
             scrollbarSize: 0,
             sortName: 'st_index',
             sortOrder: 'DESC',
-            queryParams: {st_rid:rid},
+            queryParams: {st_rid:stConfig.rid},
     onLoadSuccess: function(){
         $(this).edatagrid('enableDnd');
     },
     onSortColumn: function(sort,order) {
-        stOrderBy = sort;
-        stOrderDir = order;
+        stConfig.stOrderBy = sort;
+        stConfig.stOrderDir = order;
     },
     onDestroy: function(index) {
         rows = $(this).edatagrid('getRows');
         m = rows.length;
-        from = (stOrderDir == 'asc') ? index : 0;
-        to = (stOrderDir == 'asc') ? m : index;
+        from = (stConfig.stOrderDir == 'asc') ? index : 0;
+        to = (stConfig.stOrderDir == 'asc') ? m : index;
         for (var i = from; i < to; i++) {
             sti = rows[i].st_index;
             $(this).edatagrid('updateRow',{
@@ -219,7 +172,7 @@ stGridHelper = {
        }
     },
     onBeforeDrag: function(row) {
-        if (stOrderBy == 'st_index' && !row.editing) {
+        if (stConfig.stOrderBy == 'st_index' && !row.editing) {
             $('body').css('overflow-x','hidden');
             $('.datagrid-body').css('overflow-y','hidden');
         } else {
@@ -256,8 +209,8 @@ stGridHelper = {
                     'st_index':sourceRow.st_index
                 },
                 'point':point, 
-                'st_rid':rid,
-                'orderDir':stOrderDir
+                'st_rid':stConfig.rid,
+                'orderDir':stConfig.stOrderDir
             }
           }).done(function(response) {
             if (response) {
@@ -270,13 +223,13 @@ stGridHelper = {
                     if (tgt < src) {
                         rows[tgt].st_index = targetRow.st_index;
                         for (var i = tgt;i<=src;i++) {
-                            rows[i].st_index = rows[i-1] != undefined ? rows[i-1].st_index - (stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
+                            rows[i].st_index = rows[i-1] != undefined ? rows[i-1].st_index - (stconfig.stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
                             $('#stGrid').edatagrid('refreshRow',i);
                         }
                     } else {
                         rows[tgt].st_index = targetRow.st_index;
                         for (var i = tgt;i>=src;i--) {
-                            rows[i].st_index = rows[i+1] != undefined ? parseInt(rows[i+1].st_index) + (stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
+                            rows[i].st_index = rows[i+1] != undefined ? parseInt(rows[i+1].st_index) + (stConfig.stOrderDir == 'desc' ? 1 : -1) : rows[i].st_index;
                             $('#stGrid').edatagrid('refreshRow',i);
                         }
                     }
@@ -436,30 +389,20 @@ $(window).load(function(){
     if ($('#st-tab')) {
     $('#st-tab.selected').trigger('click');    
 }
-})
-
+});
 $(document).ready(function(){
 $('#st-tab').click(function(){
-    if (stGridLoaded) {
+    if (stConfig.stGridLoaded) {
         $('#stGrid').edatagrid('reload');
-        
     } else {
-        $('#SimpleTube').append(
-            '<div id="addVideo">' +
-            '<label><b>Ссылка на видео:</b></label><br>' +
-            '<input name="stUrl"><a href="javascript:void(0)" onclick="stGridHelper.addRow();">Добавить</a>' +
-            '</div>' +
-            '<table id="stGrid" width="100%"></table>'
-            );
-        w = $('#SimpleTube').width() - 18;
         stGridHelper.initGrid();
-        stGridLoaded = true;
-        $('#stGrid').edatagrid('resize',{width:w});
+        stConfig.stGridLoaded = true;
+        $(window).trigger('resize'); //stupid hack
     }
 })
 })
 })(jQuery)
 </script>
-<div id="SimpleTube" class="tab-page" style="display:none;width:100%;-moz-box-sizing: border-box; box-sizing: border-box;">
+<div id="SimpleTube" class="tab-page" style="width:100%;-moz-box-sizing: border-box; box-sizing: border-box;">
 <h2 class="tab" id="st-tab">[+tabName+]</h2>
 </div>
