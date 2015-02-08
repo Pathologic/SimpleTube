@@ -193,9 +193,6 @@ stGridHelper = {
     onDrop:function(targetRow,sourceRow,point) {
         src = this.sourceRow.index;
         tgt = this.targetRow.index;
-
-        state = $.data(this, 'datagrid');
-        tr = $('tr',state.dc.body2);
         $.ajax({
               url:'[+url+]?mode=reorder',
               type: 'post',
