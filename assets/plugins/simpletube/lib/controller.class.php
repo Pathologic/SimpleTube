@@ -55,7 +55,6 @@ class stController extends \SimpleTab\AbstractController {
     }
     public function remove()
     {
-        $out = array();
         $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
         if ($id) {
             $this->data->delete($id);
@@ -84,13 +83,12 @@ class stController extends \SimpleTab\AbstractController {
         }
         if (!$checkThumb) {
             $source = realpath(MODX_BASE_PATH . $_REQUEST['st_thumbUrl']);
-            if ($source && file_exists($source)) {
-                $fileinfo = pathinfo($source);
-                if (in_array(strtolower($fileinfo['extension']), array('gif', 'png', 'jpeg', 'jpg'))) {
+            if ($source && $this->FS->checkFile($source)) {
+                if (in_array(strtolower($this->FS->takeFileExt($source)), array('gif', 'png', 'jpeg', 'jpg'))) {
                     $folder = isset($this->params['folder']) ? $this->params['folder'] : 'assets/video/';
                     $folder .= $origin['st_rid'] . '/';
-                    if (!is_dir(MODX_BASE_PATH . $folder)) mkdir(MODX_BASE_PATH . $folder, intval($this->modx->config['new_folder_permissions'], 8), true);
-                    $dest = $folder . $fileinfo['filename'] . time() . '.' . $fileinfo['extension'];
+                    $this->FS->makeDir(MODX_BASE_PATH . $folder);
+                    $dest = $folder . $this->FS->takeFileName($source) . time() . '.' . $this->FS->takeFileExt($source);
                     if (copy($source, MODX_BASE_PATH . $dest)) {
                         $_REQUEST['st_thumbUrl'] = $dest;
                     } else {

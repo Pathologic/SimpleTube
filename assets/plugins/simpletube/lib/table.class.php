@@ -63,6 +63,7 @@ class stData extends \autoTable {
 		$sourceIndex = (int)$source['st_index'];
 		$targetIndex = (int)$target['st_index'];
 		$sourceId = (int)$source['st_id'];
+		$rows = 0;
 		/* more refactoring  needed */
 		if ($target['st_index'] < $source['st_index']) {
 			if (($point == 'top' && $orderDir == 'asc') || ($point == 'bottom' && $orderDir == 'desc')) {
