@@ -8,6 +8,8 @@ class stPlugin extends  \SimpleTab\Plugin {
 	public $tpl = 'assets/plugins/simpletube/tpl/simpletube.tpl';
 	public $jsListDefault = 'assets/plugins/simpletube/js/scripts.json';
 	public $jsListCustom = 'assets/plugins/simpletube/js/custom.json';
+	public $cssListDefault = 'assets/plugins/simpletube/css/styles.json';
+	public $cssListCustom = 'assets/plugins/simpletube/css/custom.json';
 	
 	public  function getTplPlaceholders() {
 		$ph = array(

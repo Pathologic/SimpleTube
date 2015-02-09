@@ -1,7 +1,3 @@
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/lib/SimpleTab/js/easy-ui/themes/bootstrap/easyui.css">
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/lib/SimpleTab/js/easy-ui/themes/icon.css">
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simpletube/css/simpletube.css">
-
 <script type="text/javascript">
 var stConfig = {
     rid:[+id+],

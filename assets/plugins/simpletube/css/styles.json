@@ -1,0 +1,16 @@
+{
+  "styles": {
+    "EasyUICss" : {
+      "version":"1.4.1",
+      "src":"assets/lib/SimpleTab/js/easy-ui/themes/bootstrap/easyui.css"
+    },
+    "EasyUIIconsCss": {
+      "version":"1.4.1",
+      "src":"assets/lib/SimpleTab/js/easy-ui/themes/icon.css"
+    },
+    "SimpleTubeCss": {
+      "version":"0.0.9",
+      "src":"assets/plugins/simpletube/css/simpletube.css"
+    }
+  }
+}
