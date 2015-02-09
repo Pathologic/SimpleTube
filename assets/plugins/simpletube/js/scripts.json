@@ -11,6 +11,14 @@
 		"edatagrid" : {
 			"version":"1.4.1",
 			"src":"assets/plugins/simpletube/js/easy-ui/plugins/jquery.edatagrid.js"
+		},
+	  	"editors" : {
+			"version":"1.4.1",
+			"src":"assets/plugins/simpletube/js/easy-ui/editors/editors.js"
+	  	},
+	  	"SimpleTube" : {
+		  	"version":"0.0.9",
+		  	"src":"assets/plugins/simpletube/js/plugin/simpletube.js"
 		}
 	}
 }
