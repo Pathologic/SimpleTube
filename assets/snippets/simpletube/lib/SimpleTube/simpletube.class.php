@@ -58,7 +58,7 @@ class SimpleTube extends \Panorama\Video {
             "st_thumbUrl"   => (string) $this->getThumbnail(),
             "st_embedUrl"    => array_shift(explode('?',(string) $this->getEmbedUrl())),
             "st_service"     => (string) $this->getService(),
-            "st_duration"    => (string) $this->getDuration(),
+            "st_duration"    => (string) $this->getDuration()
         );
 	}
 		$this->saveThumbnail($this->getCFGDef('folder'));
@@ -90,7 +90,7 @@ class SimpleTube extends \Panorama\Video {
 		if (!is_dir($filepath)) mkdir($filepath,intval($this->modx->config['new_folder_permissions'],8),true);
 		$tmp = explode('.', $url);
 		$ext = '.' . end($tmp);
-		$filename = md5($url) . $ext;
+		$filename = md5($this->getCFGDef('input')) . $ext;
 		$image = $filepath . $filename;
 		if (!$this->getCFGDef('forceDownload') && file_exists($image)) {
 			$result = true;

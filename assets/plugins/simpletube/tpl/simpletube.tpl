@@ -47,6 +47,13 @@ var stGridColumns = [ [
         title:'Название',
         width:200,
         sortable:true,
+        formatter: function(value) {
+            return value
+                    .replace(/&/g, '&amp;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/</g, '&lt;')
+                    .replace(/"/g, '&quot;');
+        },
         editor:{
             type:'textarea'
         }

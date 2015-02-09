@@ -79,7 +79,11 @@ class stController extends \SimpleTab\AbstractController {
         $checkThumb = ($origin['st_thumbUrl'] == $_REQUEST['st_thumbUrl']);
         if (!$checkUrl) {
             $fields = $this->modx->runSnippet('SimpleTube', array('input' => $url, 'api' => '2', 'docId' => $origin['st_rid']));
-            $new['st_videoUrl'] = $url;
+            if (isset($fields['st_error']) || !$this->data->isUnique($url,$this->rid)) {
+                return $origin;
+            } else {
+                $new['st_videoUrl'] = $url;
+            }
         }
         if (!$checkThumb) {
             $source = realpath(MODX_BASE_PATH . $_REQUEST['st_thumbUrl']);
@@ -106,7 +110,7 @@ class stController extends \SimpleTab\AbstractController {
         $new['st_isactive'] = (int)!!$_REQUEST['st_isactive'];
         $new['st_index'] = (int)$_REQUEST['st_index'];
         if ($this->data->fromArray($new)->save()) {
-            if (!$checkUrl || !$checkThumb) $this->data->deleteThumb($origin['st_thumbUrl']);
+            if (!$checkThumb || !$checkUrl) $this->data->deleteThumb($origin['st_thumbUrl']);
             $this->data->close();
         }
         return $new;

@@ -1,0 +1,54 @@
+#SimpleTube .pagination select, #SimpleTube .pagination input {
+    width:auto;
+    height:auto;
+}
+#SimpleTube .pagination td {
+    vertical-align: middle;
+}
+.datagrid-view td {
+    padding:0 5px;
+}
+.datagrid-toolbar {
+    padding:10px 3px;
+}
+.datagrid-header-inner td {
+    vertical-align: middle;
+}
+#addVideo {
+    padding:0 0 10px;
+}
+#addVideo a {
+    margin-left:10px;
+    text-decoration: none;
+    display: inline-block;
+    background: linear-gradient(to bottom, #ffffff 0px, #e6e6e6 100%) repeat-x;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    color:#333;
+    padding:3px 5px;
+}
+#addVideo a:hover {
+    background: #e6e6e6;
+    border: 1px solid #ddd;
+    color: #00438a;
+}
+.datagrid-cell-c1-st_title {
+    white-space:normal !important;
+}
+.datagrid-cell-c1-st_isactive input[type="checkbox"] {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.row-top td{
+    border-top:1px solid red;
+    background:#fff;
+}
+.row-bottom td{
+    border-bottom:1px solid red;
+    background:#fff;
+}
+.row-append td{
+    border:0;
+    background:#FBEC88;
+}

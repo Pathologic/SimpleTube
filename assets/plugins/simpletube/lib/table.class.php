@@ -34,6 +34,11 @@ class stData extends \autoTable {
 		$this->_table['st_videos'] = $this->makeTable($this->table);
 	}
 
+	/**
+	 * @param $ids
+	 * @param null $fire_events
+	 * @return $this|void
+     */
 	public function delete($ids, $fire_events = NULL) {
 		if (!is_int($ids)) return; //yet only single id to delete;
 		$fields = $this->edit($ids)->toArray();
