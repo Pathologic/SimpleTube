@@ -84,6 +84,7 @@
                     }
                 },
                 pagination: true,
+                pageList:[10,25,50,100],
                 fitColumns: true,
                 striped: true,
                 idField: 'st_id',

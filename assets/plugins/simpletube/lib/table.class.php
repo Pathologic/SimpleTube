@@ -1,12 +1,13 @@
 <?php
 namespace SimpleTube;
 require_once (MODX_BASE_PATH . 'assets/lib/MODxAPI/autoTable.abstract.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/PHPThumb.php');
 
 class stData extends \autoTable {
 	/* @var autoTable $table */
 	protected $table = 'st_videos';
 	protected $pkName = 'st_id';
-	/* @var autoTable $_table */
 	public $_table = '';
 
 	public $default_field = array(
@@ -21,12 +22,16 @@ class stData extends \autoTable {
 		'st_isactive' => '1',
 		'st_rid'=>0
 		);
+	public $thumbsCache = 'assets/.stThumbs/';
+	protected $params = array();
+	protected $fs = null;
 
 	public function __construct($modx, $debug = false) {
 		parent::__construct($modx, $debug);
-        $this->_table['st_videos'] = $this->makeTable($this->table);
-        $this->modx = $modx;
-        $this->params = $modx->event->params;
+		$this->modx = $modx;
+		$this->params = (isset($modx->event->params) && is_array($modx->event->params)) ? $modx->event->params : array();
+		$this->fs = \Helpers\FS::getInstance();
+		$this->_table['st_videos'] = $this->makeTable($this->table);
 	}
 
 	public function delete($ids, $fire_events = NULL) {
@@ -39,27 +44,16 @@ class stData extends \autoTable {
 	}
 
 	public function deleteThumb($url, $cache = false) {
+		$url = $this->fs->relativePath($url);
 		if (empty($url)) return;
-		if (!$cache) {
-			$rows = $this->modx->db->select("`st_thumbUrl`",$this->_table['st_videos'],"`st_thumbUrl`='$url'");
-			if ($this->modx->db->getRecordCount($rows)) return;
-		}
-		$thumb = $this->modx->config['base_path'].$url;
-		if (file_exists($thumb)) {
-			$dir = pathinfo($thumb);
-			$dir = $dir['dirname'];
-			unlink($thumb);
-			$iterator = new \FilesystemIterator($dir);
-			if (!$iterator->valid()) rmdir ($dir);
-		}
+		if ($this->fs->checkFile($url)) unlink(MODX_BASE_PATH . $url);
+		$dir = $this->fs->takeFileDir($url);
+		$iterator = new \FilesystemIterator($dir);
+		if (!$iterator->valid()) rmdir($dir);
 		if ($cache) return;
-		$thumbsCache = 'assets/.stThumbs/';
-		if (isset($this->modx->pluginCache['SimpleTubeProps'])) {
-			$pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleTubeProps']);
-			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
-		}
+		$thumbsCache = isset($this->params['thumbsCache']) ? $this->params['thumbsCache'] : $this->thumbsCache;
 		$thumb = $thumbsCache.$url;
-		if (file_exists($this->modx->config['base_path'].$thumb)) $this->deleteThumb($thumb, true);
+		if ($this->fs->checkFile($thumb)) $this->deleteThumb($thumb, true);
 	}
 
 	public function reorder($source, $target, $point, $rid, $orderDir) {
@@ -107,21 +101,24 @@ class stData extends \autoTable {
 		return parent::save();
 	}
 
-	public function makeThumb($thumbsCache,$url,$w,$h) {
-		if (empty($thumbsCache) || empty($url)) return;
-		include_once($this->modx->config['base_path'].'assets/snippets/phpthumb/phpthumb.class.php');
-		$thumb = new \phpthumb();
-		$thumb->sourceFilename = $this->modx->config['base_path'].$url;
-	  	$thumb->setParameter('w', $w);
-  		$thumb->setParameter('h', $h);
-  		$thumb->setParameter('f', 'jpg');
-  		$thumb->setParameter('far', 'C');
-  		$outputFilename = $this->modx->config['base_path'].$thumbsCache.$url;
-  		$info = pathinfo($outputFilename);
-  		$dir = $info['dirname'];
-  		if (!is_dir($dir)) mkdir($dir,intval($this->modx->config['new_folder_permissions'],8),true);
-		if ($thumb->GenerateThumbnail()) {
-        	$thumb->RenderToFile($outputFilename);
-		}  		
+	/**
+	 * @param $folder
+	 * @param $url
+	 * @param $options
+	 * @return bool
+	 */
+	public function makeThumb($folder,$url,$options) {
+		if (empty($url)) return false;
+		$thumb = new \Helpers\PHPThumb();
+		$inputFile = MODX_BASE_PATH . $this->fs->relativePath($url);
+		$outputFile = MODX_BASE_PATH. $this->fs->relativePath($folder). '/' . $this->fs->relativePath($url);
+		$dir = $this->fs->takeFileDir($outputFile);
+		$this->fs->makeDir($dir, $this->modx->config['new_folder_permissions']);
+		if ($thumb->create($inputFile,$outputFile,$options)) {
+			return true;
+		} else {
+			$this->modx->logEvent(0, 3, $thumb->debugMessages, 'SimpleTube');
+			return false;
+		}
 	}
 }
