@@ -52,9 +52,7 @@ class stData extends \autoTable {
 		$url = $this->fs->relativePath($url);
 		if (empty($url)) return;
 		if ($this->fs->checkFile($url)) unlink(MODX_BASE_PATH . $url);
-		$dir = $this->fs->takeFileDir($url);
-		$iterator = new \FilesystemIterator($dir);
-		if (!$iterator->valid()) rmdir($dir);
+		$this->fs->rmDir($this->fs->takeFileDir($url));
 		if ($cache) return;
 		$thumbsCache = isset($this->params['thumbsCache']) ? $this->params['thumbsCache'] : $this->thumbsCache;
 		$thumb = $thumbsCache.$url;
