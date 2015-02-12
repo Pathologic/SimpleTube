@@ -10,29 +10,34 @@ class stController extends \SimpleTab\AbstractController {
         $this->data = new \SimpleTube\stData($modx);
         $this->ridField = 'st_rid';
         $this->rid = isset($_REQUEST[$this->ridField]) ? (int)$_REQUEST[$this->ridField] : 0;
+        $defaults = array(
+            'thumbsCache' => $this->data->thumbsCache,
+            'w' => 107,
+            'h' => 80,
+            'folder' => 'assets/images/video/',
+            'forceDownload' => 'Yes'
+        );
+        foreach ($defaults as $key => $value) if (!isset($this->params[$key])) $this->params[$key] = $value;
+        $this->params['thumbOptions'] = isset($this->params['customThumbOptions']) ? $this->params['customThumbOptions'] : 'w=[+w+]&h=[+h+]&far=C&f=jpg';
+        $this->params['thumbOptions'] = urldecode(str_replace(array('[+w+]', '[+h+]'), array($this->params['w'], $this->params['h']), $this->params['thumbOptions']));
+        $this->params['forceDownload'] = $this->params['forceDownload'] == 'Yes' ? 1 : 0;
+
     }
 
+    /**
+     * @return array
+     */
     public function addRow()
     {
         $out = array();
         $url = isset($_REQUEST['stUrl']) ? $_REQUEST['stUrl'] : '';
-        $url = explode('&', $url);
-        $url = $url[0];
+        $url = array_shift(explode('&', $url));
         if (empty($url)) {
             $out['success'] = false;
             $out['message'] = "Неверный URL";
         } elseif ($this->data->isUnique($url, $this->rid)) {
-            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid);
-            $w = 107;
-            $h = 80;
-            $thumbsCache = $this->data->thumbsCache;
-            if (isset($this->params)) {
-                if (isset($this->params['thumbsCache'])) $thumbsCache = $this->params['thumbsCache'];
-                if (isset($this->params['w'])) $w = $this->params['w'];
-                if (isset($this->params['h'])) $h = $this->params['h'];
-                if (isset($this->params['folder'])) $params['folder'] = $this->params['folder'];
-                if (isset($this->params['forceDownload'])) $params['forceDownload'] = ($this->params['forceDownload'] == 'Yes') ? '1' : '0';
-            }
+            extract($this->params);
+            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload);
             $fields = $this->modx->runSnippet('SimpleTube', $params);
             if (is_array($fields) && !isset($fields['st_error'])) {
                 $fields = array_merge(array(
@@ -40,7 +45,7 @@ class stController extends \SimpleTab\AbstractController {
                     'st_rid' => $this->rid
                 ), $fields);
                 if ($this->data->create($fields)->save()) {
-                    $this->data->makeThumb($thumbsCache, $fields['st_thumbUrl'], "w=$w&h=$h&q=96&f=jpg");
+                    $this->data->makeThumb($thumbsCache, $fields['st_thumbUrl'], $thumbOptions);
                     $out['success'] = true;
                 }
             } else {
@@ -68,53 +73,34 @@ class stController extends \SimpleTab\AbstractController {
     public function edit() {
         $id = isset($_REQUEST['st_id']) ? (int)$_REQUEST['st_id'] : 0;
         if ($id) {
-            $origin = $this->data->edit($id)->toArray();
+            $out = $origin = $this->data->edit($id)->toArray();
         } else {
             die();
         }
-        $new = array();
-        $url = explode('&', $_REQUEST['st_videoUrl']);
-        $url = $url[0];
-        $checkUrl = ($origin['st_videoUrl'] == $url);
-        $checkThumb = ($origin['st_thumbUrl'] == $_REQUEST['st_thumbUrl']);
-        if (!$checkUrl) {
-            $fields = $this->modx->runSnippet('SimpleTube', array('input' => $url, 'api' => '2', 'docId' => $origin['st_rid']));
-            if (isset($fields['st_error']) || !$this->data->isUnique($url,$this->rid)) {
-                return $origin;
-            } else {
-                $new['st_videoUrl'] = $url;
-            }
-        }
-        if (!$checkThumb) {
-            $source = realpath(MODX_BASE_PATH . $_REQUEST['st_thumbUrl']);
-            if ($source && $this->FS->checkFile($source)) {
-                if (in_array(strtolower($this->FS->takeFileExt($source)), array('gif', 'png', 'jpeg', 'jpg'))) {
-                    $folder = isset($this->params['folder']) ? $this->params['folder'] : 'assets/video/';
-                    $folder .= $origin['st_rid'] . '/';
-                    $this->FS->makeDir(MODX_BASE_PATH . $folder);
-                    $dest = $folder . $this->FS->takeFileName($source) . time() . '.' . $this->FS->takeFileExt($source);
-                    if (copy($source, MODX_BASE_PATH . $dest)) {
-                        $_REQUEST['st_thumbUrl'] = $dest;
-                    } else {
-                        $checkThumb = false;
+        extract($this->params);
+        $url = array_shift(explode('&', $_REQUEST['st_videoUrl']));
+        if ($url != $origin['st_videoUrl']) {
+            $params = array('input' => $url, 'api' => '2', 'rid' => $origin['st_rid'], 'forceDownload' => $forceDownload);
+            $out = $this->modx->runSnippet('SimpleTube', $params);
+            if (isset($out['st_error']) || !$this->data->isUnique($url,$this->rid)) $out = $origin;
+        } else {
+            $thumbUrl = $_REQUEST['st_thumbUrl'];
+            if ($out['st_thumbUrl'] != $thumbUrl) {
+                if (in_array(strtolower($this->FS->takeFileExt($thumbUrl)), array('gif', 'png', 'jpeg', 'jpg'))) {
+                    $dest = str_replace ($this->FS->takeFileName($out['st_thumbUrl']),md5($out['st_thumbUrl'].time()),$out['st_thumbUrl']);
+                    if ($this->FS->copyFile($thumbUrl, $dest)) {
+                        $this->data->deleteThumb($out['st_thumbUrl']);
+                        $out['st_thumbUrl'] = $dest;
                     }
-                } else {
-                    $checkThumb = false;
                 }
-            } else {
-                $checkThumb = false;
             }
+            $out['st_title'] = $_REQUEST['st_title'];
+            $out['st_isactive'] = (int)!!$_REQUEST['st_isactive'];
         }
-        $new['st_title'] = $checkUrl ? $_REQUEST['st_title'] : $fields['st_title'];
-        $new['st_thumbUrl'] = $checkUrl ? $_REQUEST['st_thumbUrl'] : $fields['st_thumbUrl'];
-        $new['st_isactive'] = (int)!!$_REQUEST['st_isactive'];
-        $new['st_index'] = (int)$_REQUEST['st_index'];
-        if ($this->data->fromArray($new)->save()) {
-            if (!$checkThumb || !$checkUrl) $this->data->deleteThumb($origin['st_thumbUrl']);
-            $this->data->close();
-        }
-        return $new;
+        $this->data->fromArray($out)->save();
+        return $out;
     }
+
     public function reorder()
     {
         $out = array();
@@ -134,17 +120,8 @@ class stController extends \SimpleTab\AbstractController {
     }
     public function thumb()
     {
-        $w = 107;
-        $h = 80;
         $url = $_REQUEST['url'];
-        $thumbsCache = $this->data->thumbsCache;
-        if (isset($this->params)) {
-            if (isset($this->params['thumbsCache'])) $thumbsCache = $this->params['thumbsCache'];
-            if (isset($this->params['w'])) $w = $this->params['w'];
-            if (isset($this->params['h'])) $h = $this->params['h'];
-        }
-        $thumbOptions = isset($this->params['customThumbOptions']) ? $this->params['customThumbOptions'] : 'w=[+w+]&h=[+h+]&far=C&f=jpg';
-        $thumbOptions = urldecode(str_replace(array('[+w+]', '[+h+]'), array($w, $h), $thumbOptions));
+        extract($this->params);
         $file = MODX_BASE_PATH . $thumbsCache . $url;
         if ($this->FS->checkFile($file)) {
             $info = getimagesize($file);

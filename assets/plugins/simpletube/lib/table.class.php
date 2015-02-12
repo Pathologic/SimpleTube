@@ -51,8 +51,12 @@ class stData extends \autoTable {
 	public function deleteThumb($url, $cache = false) {
 		$url = $this->fs->relativePath($url);
 		if (empty($url)) return;
-		if ($this->fs->checkFile($url)) unlink(MODX_BASE_PATH . $url);
-		$this->fs->rmDir($this->fs->takeFileDir($url));
+		if ($this->fs->checkFile($url)) {
+			unlink(MODX_BASE_PATH . $url);
+			$dir = $this->fs->takeFileDir($url);
+			$iterator = new \FilesystemIterator($dir);
+			if (!$iterator->valid()) $this->fs->rmDir($dir);
+		}
 		if ($cache) return;
 		$thumbsCache = isset($this->params['thumbsCache']) ? $this->params['thumbsCache'] : $this->thumbsCache;
 		$thumb = $thumbsCache.$url;
