@@ -36,7 +36,7 @@ class Video
     {
         // check arguments validation
         if (!isset($url) || is_null($url)) {
-            throw new \InvalidArgumentException("Нет ссылки для обработки");
+            throw new \InvalidArgumentException("No URL to parse.");
         }
 
         $this->url = $url;
@@ -58,10 +58,10 @@ class Video
         if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "Video" . DIRECTORY_SEPARATOR . $serviceName . ".php")) {
             $this->object = new $this->className($url, $options);
             if (!($this->object instanceof \Panorama\Video\VideoInterface)) {
-            throw new \Exception("Не удалось определить видео.");
+            throw new \Exception("Unsupported video service.");
             }
         } else {
-            throw new \Exception("Такие ссылки не поддерживаются.");
+            throw new \Exception("Unsupported URL.");
         }
     }
 

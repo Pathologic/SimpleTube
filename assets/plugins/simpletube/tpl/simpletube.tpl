@@ -18,7 +18,7 @@ var stGridColumns = [ [
     },
     {
         field:'st_thumbUrl',
-        title:'Превью',
+        title:_stLang['preview'],
         sortable:false,
         align:'center',
         resizable: false,
@@ -40,7 +40,7 @@ var stGridColumns = [ [
     },
     {
         field:'st_title',
-        title:'Название',
+        title:_stLang['title'],
         width:200,
         sortable:true,
         formatter: function(value) {
@@ -56,7 +56,7 @@ var stGridColumns = [ [
     },
     {
         field:'st_videoUrl',
-        title:'Ссылка',
+        title:_stLang['url'],
         width:150,
         sortable:true,
         editor:{
@@ -65,7 +65,7 @@ var stGridColumns = [ [
     },
     {
         field:'st_duration',
-        title:'Длина',
+        title:_stLang['duration'],
         align:'center',
         sortable:true,
         formatter:function(value,row,index){
@@ -74,13 +74,13 @@ var stGridColumns = [ [
     },
     {
         field:'st_service',
-        title:'Сервис',
+        title:_stLang['service'],
         align:'center',
         sortable:true
     },
     {
         field:'st_createdon',
-        title:'Добавлено',
+        title:_stLang['createdon'],
         align:'center',
         sortable:true,
         formatter:function(value) {
@@ -96,17 +96,17 @@ var stGridColumns = [ [
     },
     {
         field:'st_isactive',
-        title:'Активно',
+        title:_stLang['active'],
         align:'center',
         sortable:true,
         width:50,
         fixed:true,
         formatter:function(value){
             if (value == 1) {
-                return 'Да';
+                return _stLang['yes'];
             }
             else {
-                return '<span style="color:red;">Нет</span>'
+                return '<span style="color:red;">'+_stLang['no']+'</span>'
             }
         },
         editor:{
@@ -129,7 +129,7 @@ var stGridColumns = [ [
                 var cancel = '<a href="javascript:void(0)" onclick="stGridHelper.cancelrow(this)"><img src="media/style/MODxRE/images/icons/delete.png"></a>';
                 return save+cancel;
             } else {
-                return '<a href="javascript:void(0)" onclick="stGridHelper.deleteRow(this)" title="Удалить"><img src="media/style/[+theme+]/images/icons/trash.png"></a>';
+                return '<a href="javascript:void(0)" onclick="stGridHelper.deleteRow(this)" title="'+_stLang['delete']+'"><img src="media/style/[+theme+]/images/icons/trash.png"></a>';
             }
         }
     }

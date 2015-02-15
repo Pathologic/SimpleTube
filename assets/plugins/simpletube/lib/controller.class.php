@@ -21,7 +21,7 @@ class stController extends \SimpleTab\AbstractController {
         $this->params['thumbOptions'] = isset($this->params['customThumbOptions']) ? $this->params['customThumbOptions'] : 'w=[+w+]&h=[+h+]&far=C&f=jpg';
         $this->params['thumbOptions'] = urldecode(str_replace(array('[+w+]', '[+h+]'), array($this->params['w'], $this->params['h']), $this->params['thumbOptions']));
         $this->params['forceDownload'] = $this->params['forceDownload'] == 'Yes' ? 1 : 0;
-
+        $this->params['lang'] = $this->getLanguageCode();
     }
 
     /**
@@ -34,10 +34,10 @@ class stController extends \SimpleTab\AbstractController {
         $url = array_shift(explode('&', $url));
         if (empty($url)) {
             $out['success'] = false;
-            $out['message'] = "Неверный URL";
+            $out['message'] = 'empty_url';
         } elseif ($this->data->isUnique($url, $this->rid)) {
             extract($this->params);
-            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload);
+            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload, 'lang'=>$lang);
             $fields = $this->modx->runSnippet('SimpleTube', $params);
             if (is_array($fields) && !isset($fields['st_error'])) {
                 $fields = array_merge(array(
@@ -54,7 +54,7 @@ class stController extends \SimpleTab\AbstractController {
             }
         } else {
             $out['success'] = false;
-            $out['message'] = 'Это видео уже есть в галерее.';
+            $out['message'] = 'video_exists';
         }
         return $out;
     }
@@ -66,7 +66,7 @@ class stController extends \SimpleTab\AbstractController {
             $out['success'] = true;
         } else {
             $out['success'] = false;
-            $out['message'] = "Не удалось удалить.";
+            $out['message'] = 'cannot_delete';
         }
         return $out;
     }
@@ -80,7 +80,7 @@ class stController extends \SimpleTab\AbstractController {
         extract($this->params);
         $url = array_shift(explode('&', $_REQUEST['st_videoUrl']));
         if ($url != $origin['st_videoUrl']) {
-            $params = array('input' => $url, 'api' => '2', 'rid' => $origin['st_rid'], 'forceDownload' => $forceDownload);
+            $params = array('input' => $url, 'api' => '2', 'rid' => $origin['st_rid'], 'forceDownload' => $forceDownload, 'lang'=>$lang);
             $out = $this->modx->runSnippet('SimpleTube', $params);
             if (isset($out['st_error']) || !$this->data->isUnique($url,$this->rid)) $out = $origin;
         } else {
@@ -114,7 +114,7 @@ class stController extends \SimpleTab\AbstractController {
             $out['success'] = true;
         } else {
             $out['success'] = false;
-            $out['message'] = "Не удалось сохранить данные.";
+            $out['message'] = 'cannot_save';
         }
         return $out;
     }
@@ -143,5 +143,12 @@ class stController extends \SimpleTab\AbstractController {
         header("Content-type: image/jpeg");
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
         readfile($file);
+    }
+    public function getLanguageCode() {
+        $manager_language = $this->modx->config['manager_language'];
+        if(file_exists(MODX_MANAGER_PATH."includes/lang/".$manager_language.".inc.php")) {
+            include_once MODX_MANAGER_PATH."includes/lang/".$manager_language.".inc.php";
+        }
+        return $modx_lang_attribute;
     }
 }

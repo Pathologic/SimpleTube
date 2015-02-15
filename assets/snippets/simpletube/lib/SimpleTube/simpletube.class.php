@@ -6,6 +6,7 @@ class SimpleTube extends \Panorama\Video {
 	public $videoDetails = array();
 	public $DLTemplate = null;
 	public $errorMessage = array();
+	public $lang = array();
 	
 	public function __construct ($modx, $cfg = array()) {
 		try {
@@ -26,22 +27,27 @@ class SimpleTube extends \Panorama\Video {
 			'noImage' => 'assets/snippets/simpletube/noimage.png',
 			'forceDownload' => false
 		),$cfg);
-        
+		$langfile = MODX_BASE_PATH."assets/snippets/simpletube/lib/SimpleTube/lang/{$this->getCFGDef('lang','en')}.php";
+		$this->lang = array();
+		if (file_exists($langfile) && is_readable($langfile)) {
+			include_once $langfile;
+			$this->lang = $lang;
+		}
         try {
         	if (!isset ($cfg['input']) || empty($cfg['input'])) 
-        		throw new \Exception('Нет ссылки для обработки.');
+        		throw new \Exception('No URL to parse.');
 
         	$pattern = "@^(https?|ftp)://[^\s/$.?#].[^\s]*$@iS";
         	if (!preg_match($pattern, $cfg['input'],$match)) {
-           		throw new \Exception('Такие ссылки не поддерживаются.');
+           		throw new \Exception('Unsupported URL.');
         	}
 
         	parent::__construct($cfg['input']);	
         } catch (\Exception $e) {
-        	$this->errorMessage[] = $e->getMessage();
+        	$this->errorMessage[] = $this->translate($e->getMessage());
         }
-        require_once ($this->modx->config['base_path'].'assets/snippets/DocLister/lib/DLTemplate.class.php');
-        require_once ($this->modx->config['base_path'].'assets/lib/APIHelpers.class.php');
+        require_once (MODX_BASE_PATH.'assets/snippets/DocLister/lib/DLTemplate.class.php');
+        require_once (MODX_BASE_PATH.'assets/lib/APIHelpers.class.php');
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
 	}
 
@@ -49,18 +55,17 @@ class SimpleTube extends \Panorama\Video {
 	public function getVideoDetails() {
 		if (!empty($this->errorMessage)) {
 			$this->videoDetails = array (
-				"st_error" => implode(', ',$this->errorMessage)
+				'st_error' => implode(' ',$this->errorMessage)
 			);
 		} else {
-
-		$this->videoDetails = array(
-            "st_title"       => (string) $this->getTitle(),
-            "st_thumbUrl"   => (string) $this->getThumbnail(),
-            "st_embedUrl"    => array_shift(explode('?',(string) $this->getEmbedUrl())),
-            "st_service"     => (string) $this->getService(),
-            "st_duration"    => (string) $this->getDuration()
-        );
-	}
+			$this->videoDetails = array(
+				'st_title'		=> (string) $this->getTitle(),
+				'st_thumbUrl'	=> (string) $this->getThumbnail(),
+				'st_embedUrl'	=> array_shift(explode('?',(string) $this->getEmbedUrl())),
+				'st_service'	=> (string) $this->getService(),
+				'st_duration'	=> (string) $this->getDuration()
+			);
+		}
 		$this->saveThumbnail($this->getCFGDef('folder'));
 		return $this->videoDetails;
 	}
@@ -98,13 +103,9 @@ class SimpleTube extends \Panorama\Video {
 			$result = false;
 			$response = $this->Curl($url);
 			if (!empty($response)) $result = file_put_contents($image, $response);
-		}	
-		
-		if ($result) {
-			$url = $folder.$filename;
-		} else {
-			$url = '';
 		}
+		$url = '';
+		if ($result) $url = $folder.$filename;
 	}
 
 	public function Curl($url = '') {
@@ -113,18 +114,21 @@ class SimpleTube extends \Panorama\Video {
 		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-
 		$data = curl_exec($ch);
 		return $data;
 	}
 
 	public function getCFGDef($name, $def = null)
     {
-        return isset($this->_cfg[$name]) ? $this->_cfg[$name] : $def;
+        return array_key_exists($name,$this->_cfg) ? $this->_cfg[$name] : $def;
     }
 
     public function render() {
    		$out = $this->DLTemplate->parseChunk($this->getCFGDef('tpl'),$this->videoDetails);
    		return $out;
     }
+
+	public function translate($phrase) {
+		return array_key_exists($phrase,$this->lang) ? $this->lang[$phrase] : $phrase;
+	}
 }

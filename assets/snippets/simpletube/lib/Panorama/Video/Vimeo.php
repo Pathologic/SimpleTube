@@ -49,7 +49,7 @@ class Vimeo implements VideoInterface
                 "http://vimeo.com/api/v2/video/" . $videoId . ".php"
             );
             if (!$document) {
-                throw new \Exception('Не удалось определить видео.');
+                throw new \Exception('Cannot fetch video data.');
             }
             $information = unserialize($document);
             $this->feed = $information[0];

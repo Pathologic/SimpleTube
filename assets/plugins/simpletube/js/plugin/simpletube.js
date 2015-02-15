@@ -3,6 +3,13 @@
         sourceRow: {},
         targetRow: {},
         point: '',
+        isValidJSON: function(src) {
+            var filtered = src;
+            filtered = filtered.replace(/\\["\\\/bfnrtu]/g, '@');
+            filtered = filtered.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+            filtered = filtered.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+            return (/^[\],:{}\s]*$/.test(filtered));
+        },
         addRow: function () {
             var url = $('input', '#addVideo').val();
             if (url != '') {
@@ -11,10 +18,11 @@
                     type: 'post',
                     data: {'stUrl': url, 'st_rid': stConfig.rid}
                 }).done(function (response) {
-                    if (response) {
+                    if (stGridHelper.isValidJSON(response)) {
                         response = $.parseJSON(response);
                         if (!response.success) {
-                            $.messager.alert('Ошибка', response.message);
+                            response.message = (_stLang[response.message] != undefined) ? _stLang[response.message] : response.message;
+                            $.messager.alert(_stLang['error'], response.message);
                         } else {
                             $('input', '#addVideo').val('');
                         }
@@ -67,8 +75,8 @@
         initGrid: function () {
             $('#SimpleTube').append(
                 '<div id="addVideo">' +
-                '<label><b>Ссылка на видео:</b></label><br>' +
-                '<input name="stUrl"><a href="javascript:void(0)" onclick="stGridHelper.addRow();">Добавить</a>' +
+                '<label><b>'+_stLang['video_url']+':</b></label><br>' +
+                '<input name="stUrl"><a href="javascript:void(0)" onclick="stGridHelper.addRow();">'+_stLang['add']+'</a>' +
                 '</div>' +
                 '<table id="stGrid" width="100%"></table>'
             );
@@ -79,8 +87,8 @@
                 updateUrl: stConfig.url+'?mode=edit',
                 destroyMsg: {
                     confirm: {   // when select a row
-                        title: 'Удаление записи',
-                        msg: 'Вы уверены, что хотите удалить запись?'
+                        title: _stLang['delete'],
+                        msg: _stLang['are_you_sure']
                     }
                 },
                 pagination: true,
@@ -153,10 +161,11 @@
                             'orderDir': stConfig.stOrderDir
                         }
                     }).done(function (response) {
-                        if (response) {
+                        if (stGridHelper.isValidJSON(response)) {
                             response = $.parseJSON(response);
                             if (!response.success) {
-                                $.messager.alert('Ошибка', response.message);
+                                response.message = (_stLang[response.message] != undefined) ? _stLang[response.message] : response.message;
+                                $.messager.alert(_stLang['error'], response.message);
                                 $('#stGrid').edatagrid('reload');
                             } else {
                                 rows = $('#stGrid').edatagrid('getRows');

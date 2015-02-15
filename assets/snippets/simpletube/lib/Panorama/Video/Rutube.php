@@ -33,7 +33,7 @@ class Rutube implements VideoInterface
         $this->url = $url;
         $this->options = $options;
         if (!($this->videoId = $this->getvideoId())) {
-            throw new \Exception("Не удалось определить видео.", 1);
+            throw new \Exception("Cannot fetch video data.", 1);
         }
         $this->getRtInfo();
     }
