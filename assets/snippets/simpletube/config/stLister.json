@@ -9,6 +9,6 @@
 	"addWhereList" : "`st_isactive`=1",
 	"thumbOptions" : "w=320&h=240&far=C",
 	"imageField" : "st_thumbUrl",
-	"titleField" : "st_title",
-	"noneWrapOuter" : "0"
+	"noneWrapOuter" : "0",
+	"e" : "st_title"
 }

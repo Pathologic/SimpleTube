@@ -25,7 +25,7 @@ $params = array_merge(array(
     "config"        =>  "stLister:assets/snippets/simpletube/config/"
 ), $modx->event->params, array(
     'depth' => '0',
-    'showParent' => '1'
+    'showParent' => '-1'
 ));
 
 if(!class_exists("DLstLister", false)){
@@ -39,9 +39,7 @@ if(!class_exists("DLstLister", false)){
                     'input' => $data[$imageField],
                     'options' => $thumbOptions
                 ));
-            }
-            $titleField = $_DL->getCfgDef('titleField');
-            $data['e.'.$titleField] = htmlentities($data[$titleField], ENT_COMPAT, 'UTF-8', false);
+            }            
         }
     }
 }
