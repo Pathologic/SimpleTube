@@ -5,13 +5,13 @@
 #SimpleTube .pagination td {
     vertical-align: middle;
 }
-.datagrid-view td {
+#SimpleTube .datagrid-view td {
     padding:0 5px;
 }
-.datagrid-toolbar {
+#SimpleTube .datagrid-toolbar {
     padding:10px 3px;
 }
-.datagrid-header-inner td {
+#SimpleTube .datagrid-header-inner td {
     vertical-align: middle;
 }
 #addVideo {
@@ -32,15 +32,15 @@
     border: 1px solid #ddd;
     color: #00438a;
 }
-.datagrid-cell-c1-st_title {
+#SimpleTube .datagrid-cell-c1-st_title {
     white-space:normal !important;
 }
-.datagrid-cell-c1-st_isactive input[type="checkbox"] {
+#SimpleTube .datagrid-cell-c1-st_isactive input[type="checkbox"] {
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
-.row-top td{
+#SimpleTube .row-top td{
     border-top:1px solid red;
     background:#fff;
 }
@@ -48,7 +48,7 @@
     border-bottom:1px solid red;
     background:#fff;
 }
-.row-append td{
+#SimpleTube .row-append td{
     border:0;
     background:#FBEC88;
 }

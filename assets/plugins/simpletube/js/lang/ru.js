@@ -7,6 +7,7 @@ _stLang['error'] = 'Ошибка.';
 _stLang['video_url'] = 'Ссылка на видео';
 _stLang['add'] = 'Добавить';
 _stLang['delete'] = 'Удаление записи';
+_stLang['are_you_sure_to_delete_many'] = 'Вы уверены, что хотите удалить выбранные записи?';
 _stLang['are_you_sure'] = 'Вы уверены?';
 _stLang['preview'] = 'Превью';
 _stLang['title'] = 'Название';

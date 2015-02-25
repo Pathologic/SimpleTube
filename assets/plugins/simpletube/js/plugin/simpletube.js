@@ -72,6 +72,39 @@
             var tr = $(target).closest('tr.datagrid-row');
             return parseInt(tr.attr('datagrid-row-index'));
         },
+        getSelected: function() {
+            var ids = [];
+            var rows = $('#stGrid').edatagrid('getChecked');
+            if (rows.length) {
+                $.each(rows, function(i, row) {
+                    ids.push(row.st_id);
+                });
+            }
+            ids = ids.join();
+            return ids;
+        },
+        deleteAll: function() {
+            var ids = this.getSelected();
+            $.messager.confirm(_stLang['delete'],_stLang['are_you_sure_to_delete_many'],function(r){
+                if (r){
+                    $.post(
+                        stConfig.url+'?mode=remove', 
+                        {
+                            ids:ids,
+                            st_rid:stConfig.rid
+                        },
+                        function(data) {
+                            if (stGridHelper.isValidJSON(data)) data=$.parseJSON(data);
+                            if(data.success) {
+                                $('#stGrid').edatagrid('reload');
+                            } else {
+                                $.messager.alert(_stLang['error'],_stLang['cannot_delete']);
+                            }
+                        }
+                    );
+                }
+            });
+        },
         initGrid: function () {
             $('#SimpleTube').append(
                 '<div id="addVideo">' +
@@ -82,8 +115,9 @@
             );
             $('#stGrid').edatagrid({
                 url: stConfig.url+'',
-                singleSelect: true,
-                destroyUrl: stConfig.url+'?mode=remove',
+                singleSelect: false,
+                checkOnSelect:false,
+                destroyUrl: stConfig.url+'?mode=remove&st_rid='+stConfig.rid,
                 updateUrl: stConfig.url+'?mode=edit',
                 destroyMsg: {
                     confirm: {   // when select a row
@@ -100,6 +134,10 @@
                 sortName: 'st_index',
                 sortOrder: 'DESC',
                 queryParams: {st_rid: stConfig.rid},
+                onBeforeLoad: function() {
+                    $(this).edatagrid('clearChecked');
+                    $('.btn-extra').parent().parent().hide();
+                },
                 onLoadSuccess: function () {
                     $(this).edatagrid('enableDnd');
                 },
@@ -108,19 +146,8 @@
                     stConfig.stOrderDir = order;
                 },
                 onDestroy: function (index) {
-                    rows = $(this).edatagrid('getRows');
-                    m = rows.length;
-                    from = (stConfig.stOrderDir == 'asc') ? index : 0;
-                    to = (stConfig.stOrderDir == 'asc') ? m : index;
-                    for (var i = from; i < to; i++) {
-                        sti = rows[i].st_index;
-                        $(this).edatagrid('updateRow', {
-                            index: i,
-                            row: {
-                                st_index: sti - 1
-                            }
-                        })
-                    }
+                    $(this).edatagrid('reload');
+                    
                 },
                 onBeforeDrag: function (row) {
                     if (stConfig.stOrderBy == 'st_index' && !row.editing) {
@@ -186,9 +213,6 @@
                         }
                     })
                 },
-                onSelect: function (rowIndex, rowData) {
-                    $('#stGrid').edatagrid('unselectRow', rowIndex);
-                },
                 onBeforeEdit: function (index, row) {
                     row.editing = true;
                     stGridHelper.updateActions(index);
@@ -205,8 +229,36 @@
                     row.editing = false;
                     $('#stGrid').edatagrid('cancelEdit', row);
                 },
+                onSelect: function (rowIndex, rowData) {
+                    $('#stGrid').edatagrid('unselectRow', rowIndex);
+                },
+                onCheck: function(rowIndex, rowData) {
+                    $('#stGrid').edatagrid('unselectRow', rowIndex);
+                    $('.btn-extra').parent().parent().show();
+                },
+                onUncheck: function() {
+                    var rows = $('#stGrid').edatagrid('getChecked');
+                    if (!rows.length) $('.btn-extra').parent().parent().hide();
+                },
+                onCheckAll: function() {
+                    $('#stGrid').edatagrid('unselectAll');
+                    $('.btn-extra').parent().parent().show();
+                },
+                onUncheckAll: function() {
+                    $('.btn-extra').parent().parent().hide();
+                },
                 columns: stGridColumns
-            })
+            });
+            var pager = $('#stGrid').datagrid('getPager');    // get the pager of datagrid
+            pager.pagination({
+                buttons:[
+                {
+                    iconCls:'btn-deleteAll btn-extra',
+                    handler:function(){stGridHelper.deleteAll();}
+                }
+                ]
+            });
+            $('.btn-extra').parent().parent().hide();
         }
     }
 })(jQuery);

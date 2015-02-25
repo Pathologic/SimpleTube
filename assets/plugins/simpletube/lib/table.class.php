@@ -35,18 +35,33 @@ class stData extends \autoTable {
 	}
 
 	/**
-	 * @param $ids
-	 * @param null $fire_events
-	 * @return $this|void
+     * @param $ids
+     * @param null $fire_events
+     * @return mixed
      */
-	public function delete($ids, $fire_events = NULL) {
-		if (!is_int($ids)) return; //yet only single id to delete;
-		$fields = $this->edit($ids)->toArray();
-		$out = parent::delete($ids);
-		$rows = $this->modx->db->update( '`st_index`=`st_index`-1', $this->_table['st_videos'], '`st_rid`='.($fields['st_rid'] ? $fields['st_rid'] : 0).' AND `st_id` > ' . $ids);
-		$this->deleteThumb($fields['st_thumbUrl']);
+    public function deleteAll($ids, $rid, $fire_events = NULL) {
+		$ids = $this->cleanIDs($ids, ',', array(0));
+		if(empty($ids) || is_scalar($ids)) return false;
+		$ids = implode(',',$ids);
+		$videos = $this->query('SELECT `st_id`,`st_thumbUrl` FROM '.$this->_table['st_videos'].' WHERE `st_id` IN ('.$this->sanitarIn($ids).')');
+		$out = $this->delete($ids, $fire_events);
+        $this->clearIndexes($ids,$rid);
+		while ($row = $this->modx->db->getRow($videos)) {
+			$this->deleteThumb($row['st_thumbUrl']);
+		}
 		return $out;
 	}
+
+    private function clearIndexes($ids, $rid) {
+        $rows = $this->query("SELECT MIN(`st_index`) FROM {$this->_table['st_videos']} WHERE `st_id` IN ({$ids})");
+        $index = $this->modx->db->getValue($rows);
+        $index = $index - 1;
+        $this->query("ALTER TABLE {$this->_table['st_videos']} AUTO_INCREMENT = 1");
+        $this->query("SET @index := ".$index);
+        $this->query("UPDATE {$this->_table['st_videos']} SET `st_index` = (@index := @index + 1) WHERE (`st_index`>{$index} AND `st_rid`={$rid}) ORDER BY `st_index` ASC");
+        $out = $this->modx->db->getAffectedRows();
+        return $out;
+    }
 
 	public function deleteThumb($url, $cache = false) {
 		$url = $this->fs->relativePath($url);

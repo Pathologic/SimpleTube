@@ -1,3 +1,8 @@
+<style type="text/css">
+    .btn-deleteAll {
+        background: url(media/style/[+theme+]/images/icons/trash.png) -2px center no-repeat;
+    }
+</style>
 <script type="text/javascript">
 var stConfig = {
     rid:[+id+],
@@ -8,9 +13,13 @@ var stConfig = {
 };
 var stGridColumns = [ [
     {
+        field: 'st_select',
+        checkbox:true
+    },
+    {
         field:'st_index',
         title: '#',
-        sortable:true,
+        sortable:true
     },
     {
         field:'st_id',
@@ -126,7 +135,7 @@ var stGridColumns = [ [
         formatter:function(value,row,index){
             if (row.editing){
                 var save = '<a href="javascript:void(0)" onclick="stGridHelper.saverow(this)"><img src="media/style/[+theme+]/images/icons/save.png"></a> ';
-                var cancel = '<a href="javascript:void(0)" onclick="stGridHelper.cancelrow(this)"><img src="media/style/MODxRE/images/icons/delete.png"></a>';
+                var cancel = '<a href="javascript:void(0)" onclick="stGridHelper.cancelrow(this)"><img src="media/style/[+theme+]/images/icons/delete.png"></a>';
                 return save+cancel;
             } else {
                 return '<a href="javascript:void(0)" onclick="stGridHelper.deleteRow(this)" title="'+_stLang['delete']+'"><img src="media/style/[+theme+]/images/icons/trash.png"></a>';

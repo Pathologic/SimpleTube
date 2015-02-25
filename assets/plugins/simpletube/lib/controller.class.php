@@ -60,13 +60,14 @@ class stController extends \SimpleTab\AbstractController {
     }
     public function remove()
     {
-        $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
-        if ($id) {
-            $this->data->delete($id);
-            $out['success'] = true;
-        } else {
-            $out['success'] = false;
-            $out['message'] = 'cannot_delete';
+        $out = array();
+        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
+        $ids = isset($_REQUEST['id']) ? (string)$_REQUEST['id'] : $ids;
+        $out['success'] = false;
+        if (!empty($ids)) {
+            if ($this->data->deleteAll($ids, $this->rid)) {
+                $out['success'] = true;
+            }
         }
         return $out;
     }

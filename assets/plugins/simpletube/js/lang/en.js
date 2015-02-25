@@ -7,6 +7,7 @@ _stLang['error'] = 'Error.';
 _stLang['video_url'] = 'Video URL';
 _stLang['add'] = 'Add';
 _stLang['delete'] = 'Delete';
+_stLang['are_you_sure_to_delete_many'] = 'Are you sure to delete selected rows?';
 _stLang['are_you_sure'] = 'Are you sure?';
 _stLang['preview'] = 'Preview';
 _stLang['title'] = 'Title';
