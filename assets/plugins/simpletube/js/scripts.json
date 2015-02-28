@@ -2,7 +2,7 @@
 	"scripts": {
 		"EasyUI" : {
 			"version":"1.4.1",
-			"src":"assets/lib/SimpleTab/js/easy-ui/jquery.easyui.min.js"
+			"src":"assets/js/easy-ui/jquery.easyui.min.js"
 		},
 		"datagrid-dnd" : {
 				"version":"1.4.1",
@@ -14,7 +14,7 @@
 		},
 	  	"easyui-lang-[+lang+]":{
 			"version":"1.4.1",
-			"src":"assets/lib/SimpleTab/js/easy-ui/locale/easyui-lang-[+lang+].js"
+			"src":"assets/js/easy-ui/locale/easyui-lang-[+lang+].js"
 		},
 	  	"editors" : {
 			"version":"1.4.1",
