@@ -18,7 +18,7 @@
 		},
 	  	"editors" : {
 			"version":"1.4.1",
-			"src":"assets/js/easy-ui/editors/editors.js"
+			"src":"assets/js/easy-ui/editors/imageBrowser.js"
 	  	},
 	  	"SimpleTube" : {
 		  	"version":"0.0.9",
