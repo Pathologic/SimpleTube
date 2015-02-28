@@ -2,23 +2,23 @@
 	"scripts": {
 		"EasyUI" : {
 			"version":"1.4.1",
-			"src":"assets/lib/SimpleTab/js/easy-ui/jquery.easyui.min.js"
+			"src":"assets/js/easy-ui/jquery.easyui.min.js"
 		},
 		"datagrid-dnd" : {
 				"version":"1.4.1",
-				"src":"assets/plugins/simpletube/js/easy-ui/plugins/jquery.datagrid-dnd.js"
+				"src":"assets/js/easy-ui/plugins/jquery.datagrid-dnd.js"
 		},
 		"edatagrid" : {
 			"version":"1.4.1",
-			"src":"assets/plugins/simpletube/js/easy-ui/plugins/jquery.edatagrid.js"
+			"src":"assets/js/easy-ui/plugins/jquery.edatagrid.js"
 		},
 	  	"easyui-lang-[+lang+]":{
 			"version":"1.4.1",
-			"src":"assets/lib/SimpleTab/js/easy-ui/locale/easyui-lang-[+lang+].js"
+			"src":"assets/js/easy-ui/locale/easyui-lang-[+lang+].js"
 		},
 	  	"editors" : {
 			"version":"1.4.1",
-			"src":"assets/plugins/simpletube/js/easy-ui/editors/editors.js"
+			"src":"assets/js/easy-ui/editors/imageBrowser.js"
 	  	},
 	  	"SimpleTube" : {
 		  	"version":"0.0.9",
