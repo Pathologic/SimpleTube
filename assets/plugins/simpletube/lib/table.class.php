@@ -46,6 +46,7 @@ class stData extends \autoTable {
 		$videos = $this->query('SELECT `st_id`,`st_thumbUrl` FROM '.$this->_table['st_videos'].' WHERE `st_id` IN ('.$this->sanitarIn($ids).')');
 		$this->clearIndexes($ids,$rid);
 		$out = $this->delete($ids, $fire_events);
+		$this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
 		while ($row = $this->modx->db->getRow($videos)) {
 			$this->deleteThumb($row['st_thumbUrl']);
 		}
@@ -56,7 +57,6 @@ class stData extends \autoTable {
         $rows = $this->query("SELECT MIN(`st_index`) FROM {$this->_table['st_videos']} WHERE `st_id` IN ({$ids})");
         $index = $this->modx->db->getValue($rows);
         $index = $index - 1;
-        $this->query("ALTER TABLE {$this->_table['st_videos']} AUTO_INCREMENT = 1");
         $this->query("SET @index := ".$index);
         $this->query("UPDATE {$this->_table['st_videos']} SET `st_index` = (@index := @index + 1) WHERE (`st_index`>{$index} AND `st_rid`={$rid} AND `st_id` NOT IN ({$ids})) ORDER BY `st_index` ASC");
         $out = $this->modx->db->getAffectedRows();

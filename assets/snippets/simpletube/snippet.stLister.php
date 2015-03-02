@@ -39,7 +39,8 @@ if(!class_exists("DLstLister", false)){
                     'input' => $data[$imageField],
                     'options' => $thumbOptions
                 ));
-            }            
+            }
+            return $data;            
         }
     }
 }

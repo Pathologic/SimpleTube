@@ -27,7 +27,7 @@ class st_site_contentDocLister extends site_contentDocLister
                     $sql = "SELECT * FROM (SELECT * FROM {$table} WHERE `st_rid` IN ({$rid}) {$stAddWhereList} ORDER BY {$stOrderBy}) st GROUP BY st_rid";
                     break;
                 default:
-                    $sql = "SELECT * FROM (SELECT *, @rn := IF(@prev = `st_rid`, @rn + 1, 1) AS rn, @prev := `st_rid` FROM {$table} JOIN (SELECT @prev := NULL, @rn := 0) AS vars WHERE `sg_rid` IN ({$rid}) ORDER BY sg_rid, {$stOrderBy}) AS sg WHERE rn <= {$stDisplay}";
+                    $sql = "SELECT * FROM (SELECT *, @rn := IF(@prev = `st_rid`, @rn + 1, 1) AS rn, @prev := `st_rid` FROM {$table} JOIN (SELECT @prev := NULL, @rn := 0) AS vars WHERE `st_rid` IN ({$rid}) ORDER BY st_rid, {$stOrderBy}) AS st WHERE rn <= {$stDisplay}";
                     break;
             }
             $videos = $this->dbQuery($sql);
