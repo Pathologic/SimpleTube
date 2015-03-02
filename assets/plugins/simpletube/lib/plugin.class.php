@@ -16,7 +16,7 @@ class stPlugin extends  \SimpleTab\Plugin {
 			'id'			=>	$this->params['id'],
 			'lang'			=>	$this->lang_attribute,
 			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php',
-			'theme'			=>  $this->modx->config['manager_theme'],
+			'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
 			'tabName'		=>	$this->params['tabName'],
 			'site_url'		=>	$this->modx->config['site_url'],
 			'manager_url'	=>	MODX_MANAGER_URL,

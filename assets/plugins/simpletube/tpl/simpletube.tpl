@@ -1,6 +1,6 @@
 <style type="text/css">
     .btn-deleteAll {
-        background: url(media/style/[+theme+]/images/icons/trash.png) -2px center no-repeat;
+        background: url([+theme+]/images/icons/trash.png) -2px center no-repeat;
     }
 </style>
 <script type="text/javascript">
@@ -134,11 +134,11 @@ var stGridColumns = [ [
         fixed:true,
         formatter:function(value,row,index){
             if (row.editing){
-                var save = '<a href="javascript:void(0)" onclick="stGridHelper.saverow(this)"><img src="media/style/[+theme+]/images/icons/save.png"></a> ';
-                var cancel = '<a href="javascript:void(0)" onclick="stGridHelper.cancelrow(this)"><img src="media/style/[+theme+]/images/icons/delete.png"></a>';
+                var save = '<a href="javascript:void(0)" onclick="stGridHelper.saverow(this)"><img src="[+theme+]/images/icons/save.png"></a> ';
+                var cancel = '<a href="javascript:void(0)" onclick="stGridHelper.cancelrow(this)"><img src="[+theme+]/images/icons/delete.png"></a>';
                 return save+cancel;
             } else {
-                return '<a href="javascript:void(0)" onclick="stGridHelper.deleteRow(this)" title="'+_stLang['delete']+'"><img src="media/style/[+theme+]/images/icons/trash.png"></a>';
+                return '<a href="javascript:void(0)" onclick="stGridHelper.deleteRow(this)" title="'+_stLang['delete']+'"><img src="[+theme+]/images/icons/trash.png"></a>';
             }
         }
     }
