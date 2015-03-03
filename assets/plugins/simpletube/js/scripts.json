@@ -16,7 +16,7 @@
 			"version":"1.4.1",
 			"src":"assets/js/easy-ui/locale/easyui-lang-[+lang+].js"
 		},
-	  	"editors" : {
+	  	"imageBrowser" : {
 			"version":"1.4.1",
 			"src":"assets/js/easy-ui/editors/imageBrowser.js"
 	  	},
