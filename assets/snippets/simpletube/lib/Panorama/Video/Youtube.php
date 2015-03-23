@@ -170,7 +170,7 @@ class Youtube  implements VideoInterface
             && count($this->getFeed()->xpath('//media:content')) > 0
         ) {
             $mediaGroup =  $this->getFeed()->xpath('//media:content');
-            $this->embedUrl = (string) $mediaGroup[0]->attributes()->url;
+            $this->embedUrl = str_replace('/v/', '/embed/', (string) $mediaGroup[0]->attributes()->url);
         }
 
         return $this->embedUrl;
