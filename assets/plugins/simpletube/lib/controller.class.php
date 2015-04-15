@@ -9,6 +9,7 @@ class stController extends \SimpleTab\AbstractController {
     {
         parent::__construct($modx);
         $this->data = new \SimpleTube\stData($modx);
+        $this->dlInit();
         $defaults = array(
             'thumbsCache' => $this->data->thumbsCache,
             'w' => 107,
