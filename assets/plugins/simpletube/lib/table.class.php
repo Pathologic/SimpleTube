@@ -1,14 +1,14 @@
 <?php
 namespace SimpleTube;
-require_once (MODX_BASE_PATH . 'assets/lib/MODxAPI/autoTable.abstract.php');
-require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
+require_once (MODX_BASE_PATH . 'assets/lib/SimpleTab/table.abstract.php');
 require_once (MODX_BASE_PATH . 'assets/lib/Helpers/PHPThumb.php');
 
-class stData extends \autoTable {
+class stData extends \SimpleTab\dataTable {
 	/* @var autoTable $table */
 	protected $table = 'st_videos';
 	protected $pkName = 'st_id';
-	public $_table = '';
+	protected $indexName = 'st_index';
+	protected $rfName = 'st_rid';
 
 	public $default_field = array(
 		'st_title' => '',
@@ -23,16 +23,6 @@ class stData extends \autoTable {
 		'st_rid'=>0
 		);
 	public $thumbsCache = 'assets/.stThumbs/';
-	protected $params = array();
-	protected $fs = null;
-
-	public function __construct($modx, $debug = false) {
-		parent::__construct($modx, $debug);
-		$this->modx = $modx;
-		$this->params = (isset($modx->event->params) && is_array($modx->event->params)) ? $modx->event->params : array();
-		$this->fs = \Helpers\FS::getInstance();
-		$this->_table['st_videos'] = $this->makeTable($this->table);
-	}
 
 	/**
      * @param $ids
@@ -42,84 +32,26 @@ class stData extends \autoTable {
     public function deleteAll($ids, $rid, $fire_events = NULL) {
 		$ids = $this->cleanIDs($ids, ',', array(0));
 		if(empty($ids) || is_scalar($ids)) return false;
-		$ids = implode(',',$ids);
-		$videos = $this->query('SELECT `st_id`,`st_thumbUrl` FROM '.$this->_table['st_videos'].' WHERE `st_id` IN ('.$this->sanitarIn($ids).')');
-		$this->clearIndexes($ids,$rid);
+		$videos = $this->query("SELECT `st_id`,`st_thumbUrl` FROM {$this->makeTable($this->table)} WHERE `st_id` IN ({$this->sanitarIn($ids)})");
 		$out = $this->delete($ids, $fire_events);
-		$this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
 		while ($row = $this->modx->db->getRow($videos)) {
 			$this->deleteThumb($row['st_thumbUrl']);
 		}
 		return $out;
 	}
 
-    private function clearIndexes($ids, $rid) {
-        $rows = $this->query("SELECT MIN(`st_index`) FROM {$this->_table['st_videos']} WHERE `st_id` IN ({$ids})");
-        $index = $this->modx->db->getValue($rows);
-        $index = $index - 1;
-        $this->query("SET @index := ".$index);
-        $this->query("UPDATE {$this->_table['st_videos']} SET `st_index` = (@index := @index + 1) WHERE (`st_index`>{$index} AND `st_rid`={$rid} AND `st_id` NOT IN ({$ids})) ORDER BY `st_index` ASC");
-        $out = $this->modx->db->getAffectedRows();
-        return $out;
-    }
-
-	public function deleteThumb($url, $cache = false) {
-		$url = $this->fs->relativePath($url);
-		if (empty($url)) return;
-		if ($this->fs->checkFile($url)) {
-			unlink(MODX_BASE_PATH . $url);
-			$dir = $this->fs->takeFileDir($url);
-			$iterator = new \FilesystemIterator($dir);
-			if (!$iterator->valid()) $this->fs->rmDir($dir);
-		}
-		if ($cache) return;
-		$thumbsCache = isset($this->params['thumbsCache']) ? $this->params['thumbsCache'] : $this->thumbsCache;
-		$thumb = $thumbsCache.$url;
-		if ($this->fs->checkFile($thumb)) $this->deleteThumb($thumb, true);
-	}
-
-	public function reorder($source, $target, $point, $rid, $orderDir) {
-		$rid = (int)$rid;
-		$point = strtolower($point);
-		$orderDir = strtolower($orderDir);
-		$sourceIndex = (int)$source['st_index'];
-		$targetIndex = (int)$target['st_index'];
-		$sourceId = (int)$source['st_id'];
-		$rows = 0;
-		/* more refactoring  needed */
-		if ($target['st_index'] < $source['st_index']) {
-			if (($point == 'top' && $orderDir == 'asc') || ($point == 'bottom' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`+1',$this->_table['st_videos'],'`st_index`>='.$targetIndex.' AND `st_index`<'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.$targetIndex,$this->_table['st_videos'],'`st_id`='.$sourceId);				
-			} elseif (($point == 'bottom' && $orderDir == 'asc') || ($point == 'top' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`+1',$this->_table['st_videos'],'`st_index`>'.$targetIndex.' AND `st_index`<'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.(1+$targetIndex),$this->_table['st_videos'],'`st_id`='.$sourceId);				
-			}
-		} else {
-			if (($point == 'bottom' && $orderDir == 'asc') || ($point == 'top' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`-1',$this->_table['st_videos'],'`st_index`<='.$targetIndex.' AND `st_index`>'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.$targetIndex,$this->_table['st_videos'],'`st_id`='.(int)$source['st_id']);				
-			} elseif (($point == 'top' && $orderDir == 'asc') || ($point == 'bottom' && $orderDir == 'desc')) {
-				$rows = $this->modx->db->update('`st_index`=`st_index`-1',$this->_table['st_videos'],'`st_index`<'.$targetIndex.' AND `st_index`>'.$sourceIndex.' AND `st_rid`='.$rid);
-				$rows = $this->modx->db->update('`st_index`='.(-1+$targetIndex),$this->_table['st_videos'],'`st_id`='.$sourceId);				
-			}
-		}
-		
-		return $rows;
-	}
-
 	public function isUnique($url,$rid) {
         $url = $this->modx->db->escape($url);
         $rid = (int)$rid;
-        $rows = $this->modx->db->select("`st_id`",$this->_table['st_videos'],"`st_videoUrl`='$url' AND `st_rid`=$rid");
+        $rows = $this->modx->db->select("`st_id`",$this->makeTable($this->table),"`st_videoUrl`={$url} AND `st_rid`={$rid}");
         return !$this->modx->db->getRecordCount($rows);
     }
 
 	public function save($fire_events = null, $clearCache = false) {
 		if ($this->newDoc) {
-			$rows = $this->modx->db->select('`st_id`', $this->_table['st_videos'], '`st_rid`='.$this->field['st_rid']);
+			$rows = $this->modx->db->select("`st_id`", $this->makeTable($this->table), "`st_rid`={$this->field['st_rid']}");
 			$this->field['st_index'] = $this->modx->db->getRecordCount($rows);
-			$this->field['st_createdon'] = date('Y-m-d H:i:s');
+			$this->touch('st_createdon');
 		}
 		return parent::save();
 	}

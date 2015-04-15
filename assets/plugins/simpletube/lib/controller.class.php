@@ -4,12 +4,12 @@ require_once(MODX_BASE_PATH . 'assets/lib/SimpleTab/controller.abstract.php');
 require_once(MODX_BASE_PATH . 'assets/plugins/simpletube/lib/table.class.php');
 
 class stController extends \SimpleTab\AbstractController {
+    public $rfName = 'st_rid';
     public function __construct(\DocumentParser $modx)
     {
         parent::__construct($modx);
         $this->data = new \SimpleTube\stData($modx);
-        $this->ridField = 'st_rid';
-        $this->rid = isset($_REQUEST[$this->ridField]) ? (int)$_REQUEST[$this->ridField] : 0;
+        $this->rid = isset($_REQUEST[$this->rfName]) ? (int)$_REQUEST[$this->rfName] : 0;
         $defaults = array(
             'thumbsCache' => $this->data->thumbsCache,
             'w' => 107,
