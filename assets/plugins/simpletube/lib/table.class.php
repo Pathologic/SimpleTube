@@ -56,24 +56,4 @@ class stData extends \SimpleTab\dataTable {
 		return parent::save();
 	}
 
-	/**
-	 * @param $folder
-	 * @param $url
-	 * @param $options
-	 * @return bool
-	 */
-	public function makeThumb($folder,$url,$options) {
-		if (empty($url)) return false;
-		$thumb = new \Helpers\PHPThumb();
-		$inputFile = MODX_BASE_PATH . $this->fs->relativePath($url);
-		$outputFile = MODX_BASE_PATH. $this->fs->relativePath($folder). '/' . $this->fs->relativePath($url);
-		$dir = $this->fs->takeFileDir($outputFile);
-		$this->fs->makeDir($dir, $this->modx->config['new_folder_permissions']);
-		if ($thumb->create($inputFile,$outputFile,$options)) {
-			return true;
-		} else {
-			$this->modx->logEvent(0, 3, $thumb->debugMessages, 'SimpleTube');
-			return false;
-		}
-	}
 }

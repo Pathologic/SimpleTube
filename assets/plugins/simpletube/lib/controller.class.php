@@ -9,7 +9,6 @@ class stController extends \SimpleTab\AbstractController {
     {
         parent::__construct($modx);
         $this->data = new \SimpleTube\stData($modx);
-        $this->rid = isset($_REQUEST[$this->rfName]) ? (int)$_REQUEST[$this->rfName] : 0;
         $defaults = array(
             'thumbsCache' => $this->data->thumbsCache,
             'w' => 107,
@@ -58,19 +57,7 @@ class stController extends \SimpleTab\AbstractController {
         }
         return $out;
     }
-    public function remove()
-    {
-        $out = array();
-        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
-        $ids = isset($_REQUEST['id']) ? (string)$_REQUEST['id'] : $ids;
-        $out['success'] = false;
-        if (!empty($ids)) {
-            if ($this->data->deleteAll($ids, $this->rid)) {
-                $out['success'] = true;
-            }
-        }
-        return $out;
-    }
+    
     public function edit() {
         $id = isset($_REQUEST['st_id']) ? (int)$_REQUEST['st_id'] : 0;
         if ($id) {
@@ -102,23 +89,6 @@ class stController extends \SimpleTab\AbstractController {
         return $out;
     }
 
-    public function reorder()
-    {
-        $out = array();
-        $source = $_REQUEST['source'];
-        $target = $_REQUEST['target'];
-        $point = $_REQUEST['point'];
-        $orderDir = $_REQUEST['orderDir'];
-        $rows = $this->data->reorder($source, $target, $point, $this->rid, $orderDir);
-
-        if ($rows) {
-            $out['success'] = true;
-        } else {
-            $out['success'] = false;
-            $out['message'] = 'cannot_save';
-        }
-        return $out;
-    }
     public function thumb()
     {
         $url = $_REQUEST['url'];
@@ -144,12 +114,5 @@ class stController extends \SimpleTab\AbstractController {
         header("Content-type: image/jpeg");
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
         readfile($file);
-    }
-    public function getLanguageCode() {
-        $manager_language = $this->modx->config['manager_language'];
-        if(file_exists(MODX_MANAGER_PATH."includes/lang/".$manager_language.".inc.php")) {
-            include_once MODX_MANAGER_PATH."includes/lang/".$manager_language.".inc.php";
-        }
-        return $modx_lang_attribute;
     }
 }
