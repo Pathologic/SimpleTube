@@ -33,7 +33,7 @@ class stData extends \SimpleTab\dataTable {
 		$ids = $this->cleanIDs($ids, ',', array(0));
 		if(empty($ids) || is_scalar($ids)) return false;
 		$videos = $this->query("SELECT `st_id`,`st_thumbUrl` FROM {$this->makeTable($this->table)} WHERE `st_id` IN ({$this->sanitarIn($ids)})");
-		$out = $this->delete($ids, $fire_events);
+		$out = parent::deleteAll($ids, $rid, $fire_events);
 		while ($row = $this->modx->db->getRow($videos)) {
 			$this->deleteThumb($row['st_thumbUrl']);
 		}
@@ -43,7 +43,7 @@ class stData extends \SimpleTab\dataTable {
 	public function isUnique($url,$rid) {
         $url = $this->modx->db->escape($url);
         $rid = (int)$rid;
-        $rows = $this->modx->db->select("`st_id`",$this->makeTable($this->table),"`st_videoUrl`={$url} AND `st_rid`={$rid}");
+        $rows = $this->modx->db->select("`st_id`",$this->makeTable($this->table),"`st_videoUrl`='{$url}' AND `st_rid`={$rid}");
         return !$this->modx->db->getRecordCount($rows);
     }
 
