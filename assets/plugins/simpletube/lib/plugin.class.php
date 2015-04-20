@@ -26,7 +26,7 @@ class stPlugin extends  \SimpleTab\Plugin {
 			'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '80',
 			'noImage' 		=> 	isset($this->params['noImage']) ? $this->params['noImage'] : 'assets/snippets/simpletube/noimage.png'
 			);
-		return $ph;
+		return array_merge($this->params,$ph);
     }
     public function createTable() {
     	$sql = <<< OUT
