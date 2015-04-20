@@ -12,7 +12,7 @@ if(!isset($_SESSION['mgrValidated'])){
 }
 $modx->invokeEvent('OnManagerPageInit',array('invokedBy'=>'SimpleTube'));
 if (isset($modx->pluginCache['SimpleTubeProps'])) {
-	$modx->event->params = $modx->parseProperties($modx->pluginCache['SimpleTubeProps']);
+	$modx->event->params = $modx->parseProperties($modx->pluginCache['SimpleTubeProps'],'SimpleTube','plugin');
 } else {
 	die();
 }
