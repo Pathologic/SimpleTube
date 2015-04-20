@@ -13,11 +13,9 @@ class stPlugin extends  \SimpleTab\Plugin {
 	
 	public  function getTplPlaceholders() {
 		$ph = array(
-			'id'			=>	$this->params['id'],
 			'lang'			=>	$this->lang_attribute,
 			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php',
 			'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
-			'tabName'		=>	$this->params['tabName'],
 			'site_url'		=>	$this->modx->config['site_url'],
 			'manager_url'	=>	MODX_MANAGER_URL,
 			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php?mode=thumb&url=',
