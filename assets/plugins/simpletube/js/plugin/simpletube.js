@@ -225,9 +225,9 @@
                     row.editing = false;
                     stGridHelper.updateActions(index);
                 },
-                onClickRow: function (row) {
+                onClickRow: function (index, row) {
                     row.editing = false;
-                    $('#stGrid').edatagrid('cancelEdit', row);
+                    $('#stGrid').edatagrid('cancelEdit', index);
                 },
                 onSelect: function (rowIndex, rowData) {
                     $('#stGrid').edatagrid('unselectRow', rowIndex);
