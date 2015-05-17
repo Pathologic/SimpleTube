@@ -28,13 +28,18 @@ class Youtube  implements VideoInterface
     public function __construct($url, array $options = array())
     {
         $this->url = $url;
-        $this->options = $options;
-        if (!($this->videoId = $this->getvideoId())) {
+        if (!array_key_exists('youtube', $options)
+            && !array_key_exists('api_key', $options['youtube'])
+            && empty($options['youtube']['api_key'])
+        ) {
+            throw new \Exception("Missing Youtube configuration.");
+        }
+        $this->options = $options['youtube'];
+        if (!($this->videoId = $this->getVideoId())) {
             throw new \Exception("Cannot fetch video data.", 1);
         }
-        $this->getFeed();
+        $this->feed = $this->getFeed();
 
-        return $this;
     }
 
     /*
@@ -45,16 +50,30 @@ class Youtube  implements VideoInterface
     {
         if (!isset($this->feed)) {
             $videoId = $this->getVideoID();
-            $document = @file_get_contents(
-                "http://gdata.youtube.com/feeds/api/videos/{$videoId}"
-            );
-            if (!$document) {
-                throw new \Exception('Cannot fetch video data.');
-            }
-            $this->feed = new \SimpleXMLElement($document);
-        }
+            $apikey = $this->options['api_key'];
 
-        return $this->feed;
+            $url =
+                "https://www.googleapis.com/youtube/v3/videos?key=".$apikey
+                ."&id=".$videoId
+                ."&part=snippet,contentDetails,statistics,player"
+            ;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            $videoObj = @json_decode($data);
+            if (empty($videoObj->items)) {
+                throw new \Exception('Video Id not valid.');
+            }
+
+        }
+        return $videoObj->items[0];
     }
 
     /*
@@ -78,7 +97,7 @@ class Youtube  implements VideoInterface
     {
 
         if (!isset($this->title)) {
-            $this->title = (string) $this->getFeed()->title;
+            $this->title = (string) $this->feed->snippet->title;
         }
 
         return $this->title;
@@ -92,7 +111,7 @@ class Youtube  implements VideoInterface
     public function getDescription()
     {
         if (!isset($this->description)) {
-            $content = $this->getFeed()->xpath('//media:description');
+            $content = $this->feed->snippet->description;
             $this->description = (string) $content;
         }
 
@@ -165,14 +184,8 @@ class Youtube  implements VideoInterface
     public function getEmbedUrl()
     {
         $this->embedUrl = '';
-        if (empty($this->embedUrl)
-            && is_array($this->getFeed()->xpath('//media:content'))
-            && count($this->getFeed()->xpath('//media:content')) > 0
-        ) {
-            $mediaGroup =  $this->getFeed()->xpath('//media:content');
-            $this->embedUrl = str_replace('/v/', '/embed/', (string) $mediaGroup[0]->attributes()->url);
-        }
-
+        if (empty($this->embedUrl))
+            $this->embedUrl = 'http://www.youtube.com/embed/'.$this->getVideoID();
         return $this->embedUrl;
     }
 
@@ -207,14 +220,8 @@ class Youtube  implements VideoInterface
      */
     public function getDuration()
     {
-        if (!isset($this->duration)
-            && is_array($this->getFeed()->xpath('//media:content'))
-            && count($this->getFeed()->xpath('//media:content')) > 0
-        ) {
-            $mediaGroup =  $this->getFeed()->xpath('//media:content');
-            $this->duration = (string) $mediaGroup[0]->attributes()->duration;
-        }
-
+        if (!isset($this->duration))
+            $this->duration = (string) $this->feed->contentDetails->duration;
         return $this->duration;
     }
 
@@ -225,11 +232,8 @@ class Youtube  implements VideoInterface
      */
     public function getThumbnails()
     {
-        if (!isset($this->thumbnails)) {
-            $mediaGroup =  $this->getFeed()->xpath('//media:thumbnail');
-            $this->thumbnails = $mediaGroup;
-        }
-
+        if (!isset($this->thumbnails))
+            $this->thumbnails = $this->feed->snippet->thumbnails;
         return $this->thumbnails;
     }
 
@@ -243,9 +247,8 @@ class Youtube  implements VideoInterface
         if (!isset($this->thumbnail)) {
             $thumbnails = $this->getThumbnails();
             
-            $this->thumbnail = (string) $thumbnails[0]->attributes()->url;
+            $this->thumbnail = (string) $thumbnails->high->url;
         }
-
         return $this->thumbnail;
     }
 
@@ -256,10 +259,8 @@ class Youtube  implements VideoInterface
      */
     public function getTags()
     {
-        if (!isset($this->tags)) {
-            $mediaGroup =  $this->getFeed()->xpath('//media:keywords');
-            $this->tags = (string) $mediaGroup[0];
-        }
+        if (!isset($this->tags))
+            $this->tags = (string) $this->feed->snippet->title;
 
         return $this->tags;
     }
@@ -271,9 +272,8 @@ class Youtube  implements VideoInterface
      */
     public function getWatchUrl()
     {
-        if (!isset($this->watchUrl)) {
-            $this->watchUrl = $this->getFeed()->getVideoWatchPageUrl();
-        }
+        if (!isset($this->watchUrl))
+            $this->watchUrl = $this->url;
 
         return $this->watchUrl;
     }

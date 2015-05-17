@@ -19,9 +19,14 @@ class SimpleTube extends \Panorama\Video {
         } catch (\Exception $e) {
             die($e->getMessage());
         }
-        
-        //Defaults
 
+        //try to get Youtube API key from plugin settings if snippet parameter is empty
+        if (isset($modx->pluginCache['SimpleTubeProps'])) {
+            $pluginParams = $modx->parseProperties($modx->pluginCache['SimpleTubeProps'],'SimpleTube','plugin');
+            if (empty($cfg['ytApiKey'])) $cfg['ytApiKey'] = $pluginParams['ytApiKey'];
+        }
+
+        //Defaults
         $this->_cfg = array_merge(array(
 			'folder' => 'assets/images/video/',
 			'noImage' => 'assets/snippets/simpletube/noimage.png',
@@ -41,8 +46,10 @@ class SimpleTube extends \Panorama\Video {
         	if (!preg_match($pattern, $cfg['input'],$match)) {
            		throw new \Exception('Unsupported URL.');
         	}
-
-        	parent::__construct($cfg['input']);	
+            $options = array();
+            if (!empty($cfg['ytApiKey']))
+                $options['youtube']['api_key'] = $cfg['ytApiKey'];
+        	parent::__construct($cfg['input'], $options);
         } catch (\Exception $e) {
         	$this->errorMessage[] = $this->translate($e->getMessage());
         }
