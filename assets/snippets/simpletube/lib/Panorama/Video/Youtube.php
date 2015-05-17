@@ -220,9 +220,12 @@ class Youtube  implements VideoInterface
      */
     public function getDuration()
     {
-        if (!isset($this->duration))
-            $this->duration = (string) $this->feed->contentDetails->duration;
-        return $this->duration;
+        if (!isset($this->duration)) {
+            $this->duration = new \DateTime('@0'); // Unix epoch
+            $this->duration->add(
+                new \DateInterval($this->feed->contentDetails->duration));
+        }
+        return $this->duration->getTimestamp();
     }
 
     /*
