@@ -31,13 +31,13 @@ class stController extends \SimpleTab\AbstractController {
     {
         $out = array();
         $url = isset($_REQUEST['stUrl']) ? $_REQUEST['stUrl'] : '';
-        $url = array_shift(explode('&', $url));
+        $url = strpos($url,'list=') ? $url : array_shift(explode('&', $url));
         if (empty($url)) {
             $out['success'] = false;
             $out['message'] = 'empty_url';
         } elseif ($this->data->isUnique($url, $this->rid)) {
             extract($this->params);
-            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload, 'lang'=>$lang);
+            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload, 'lang'=>$lang, 'ytApiKey'=>$ytApiKey);
             $fields = $this->modx->runSnippet('SimpleTube', $params);
             if (is_array($fields) && !isset($fields['st_error'])) {
                 $fields = array_merge(array(

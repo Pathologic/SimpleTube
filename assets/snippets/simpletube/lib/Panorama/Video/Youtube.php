@@ -186,6 +186,7 @@ class Youtube  implements VideoInterface
         $this->embedUrl = '';
         if (empty($this->embedUrl))
             $this->embedUrl = 'http://www.youtube.com/embed/'.$this->getVideoID();
+        if ($listId = $this->getListIdFromUrl($this->url)) $this->embedUrl .= '?list='.$listId;
         return $this->embedUrl;
     }
 
@@ -291,5 +292,9 @@ class Youtube  implements VideoInterface
     {
         preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $matches);
         return $matches[1];
+    }
+    private function getListIdFromUrl($url) {
+        preg_match('%list=([^&]*)%i',$url,$matches);
+        return empty($matches) ? false : $matches[1];
     }
 }

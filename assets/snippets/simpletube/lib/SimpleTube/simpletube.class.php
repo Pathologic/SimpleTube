@@ -20,7 +20,6 @@ class SimpleTube extends \Panorama\Video {
             die($e->getMessage());
         }
 
-        //try to get Youtube API key from plugin settings if snippet parameter is empty
         if (isset($modx->pluginCache['SimpleTubeProps'])) {
             $pluginParams = $modx->parseProperties($modx->pluginCache['SimpleTubeProps'],'SimpleTube','plugin');
             if (empty($cfg['ytApiKey'])) $cfg['ytApiKey'] = $pluginParams['ytApiKey'];
@@ -68,7 +67,7 @@ class SimpleTube extends \Panorama\Video {
 			$this->videoDetails = array(
 				'st_title'		=> (string) $this->getTitle(),
 				'st_thumbUrl'	=> (string) $this->getThumbnail(),
-				'st_embedUrl'	=> array_shift(explode('?',(string) $this->getEmbedUrl())),
+				'st_embedUrl'	=> strpos($this->getEmbedUrl(),'list=') ? $this->getEmbedUrl() : array_shift(explode('?',(string) $this->getEmbedUrl())),
 				'st_service'	=> (string) $this->getService(),
 				'st_duration'	=> (string) $this->getDuration()
 			);
