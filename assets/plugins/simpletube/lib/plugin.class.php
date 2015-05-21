@@ -12,6 +12,8 @@ class stPlugin extends  \SimpleTab\Plugin {
 	public $jsListEmpty = 'assets/plugins/simpletube/js/empty.json';
 	public $cssListDefault = 'assets/plugins/simpletube/css/styles.json';
 	public $cssListCustom = 'assets/plugins/simpletube/css/custom.json';
+
+	protected $checkId = false;
 	
 	public  function getTplPlaceholders() {
 		$ph = array(

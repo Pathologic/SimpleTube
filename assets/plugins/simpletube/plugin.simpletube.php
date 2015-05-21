@@ -1,7 +1,7 @@
 <?php
 if (IN_MANAGER_MODE != 'true') die();
 $e = &$modx->event;
-if ($e->name == 'OnDocFormRender' && $id) {
+if ($e->name == 'OnDocFormRender') {
 	include_once(MODX_BASE_PATH . 'assets/plugins/simpletube/lib/plugin.class.php');
 	global $modx_lang_attribute;
 	$plugin = new \SimpleTube\stPlugin($modx, $modx_lang_attribute);
