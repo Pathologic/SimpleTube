@@ -18,3 +18,4 @@ _stLang['createdon'] = 'Created on';
 _stLang['active'] = 'Active';
 _stLang['yes'] = 'Yes';
 _stLang['no'] = 'No';
+_stLang['save_document_to_continue'] = 'Save document to work with video gallery.';

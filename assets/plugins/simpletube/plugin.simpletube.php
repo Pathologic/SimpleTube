@@ -5,7 +5,11 @@ if ($e->name == 'OnDocFormRender' && $id) {
 	include_once(MODX_BASE_PATH . 'assets/plugins/simpletube/lib/plugin.class.php');
 	global $modx_lang_attribute;
 	$plugin = new \SimpleTube\stPlugin($modx, $modx_lang_attribute);
-	$output = $plugin->render();
+	if ($id) {
+        $output = $plugin->render();
+    } else {
+        $output = $plugin->renderEmpty();
+    }
 	if ($output) $e->output($output);
 }
 if ($e->name == 'OnEmptyTrash') {

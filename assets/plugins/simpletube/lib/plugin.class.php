@@ -6,8 +6,10 @@ class stPlugin extends  \SimpleTab\Plugin {
 	public $pluginName = 'SimpleTube';
 	public $table = 'st_videos';
 	public $tpl = 'assets/plugins/simpletube/tpl/simpletube.tpl';
+	public $emptyTpl = 'assets/plugins/simpletube/tpl/empty.tpl';
 	public $jsListDefault = 'assets/plugins/simpletube/js/scripts.json';
 	public $jsListCustom = 'assets/plugins/simpletube/js/custom.json';
+	public $jsListEmpty = 'assets/plugins/simpletube/js/empty.json';
 	public $cssListDefault = 'assets/plugins/simpletube/css/styles.json';
 	public $cssListCustom = 'assets/plugins/simpletube/css/custom.json';
 	

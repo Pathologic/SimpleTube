@@ -18,3 +18,4 @@ _stLang['createdon'] = 'Добавлено';
 _stLang['active'] = 'Активно';
 _stLang['yes'] = 'Да';
 _stLang['no'] = 'Нет';
+_stLang['save_document_to_continue'] = 'Для работы с видеогалереей необходимо сохранить документ.';
