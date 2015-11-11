@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS {$this->_table} (
 `st_rid` int(10) default NULL,
 `st_index` int(10) NOT NULL default '0',
 `st_createdon` datetime NOT NULL, 
-PRIMARY KEY  (`st_id`)
+PRIMARY KEY  (`st_id`),
+KEY `st_isactive` (`st_isactive`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleTube plugin.';
 OUT;
 		return $this->modx->db->query($sql);
