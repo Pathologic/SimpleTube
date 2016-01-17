@@ -15,7 +15,7 @@ class st_site_contentDocLister extends site_contentDocLister
         $stOrderBy = $this->modx->db->escape($this->getCFGDef('stOrderBy','st_index ASC'));
 
         $sgDisplay = $this->getCFGDef('stDisplay','all');
-        $stAddWhereList = $this->modx->db->escape($this->getCFGDef('stAddWhereList',''));
+        $stAddWhereList = $this->getCFGDef('stAddWhereList','');
 
         if (!empty($stAddWhereList)) $stAddWhereList = ' AND ('.$stAddWhereList.')';
         if (!empty($rid) && ($stDisplay == 'all' || is_numeric($stDisplay))) {
