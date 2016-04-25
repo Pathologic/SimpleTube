@@ -2,7 +2,6 @@
 if (!defined('MODX_BASE_PATH')) {
     die('HACK???');
 }
-
 include_once(MODX_BASE_PATH . 'assets/snippets/DocLister/core/controller/site_content.php');
 class st_site_contentDocLister extends site_contentDocLister
 {
@@ -11,10 +10,10 @@ class st_site_contentDocLister extends site_contentDocLister
         $docs = parent::getDocs($tvlist);
 
         $table = $this->getTable('st_videos');
-        $rid = $this->modx->db->escape(implode(',',array_keys($docs)));
-        $stOrderBy = $this->modx->db->escape($this->getCFGDef('stOrderBy','st_index ASC'));
+        $rid = implode(',',array_keys($docs));
+        $stOrderBy = $this->getCFGDef('stOrderBy','st_index ASC');
 
-        $sgDisplay = $this->getCFGDef('stDisplay','all');
+        $stDisplay = $this->getCFGDef('stDisplay','all');
         $stAddWhereList = $this->getCFGDef('stAddWhereList','');
 
         if (!empty($stAddWhereList)) $stAddWhereList = ' AND ('.$stAddWhereList.')';
@@ -31,9 +30,18 @@ class st_site_contentDocLister extends site_contentDocLister
                     break;
             }
             $videos = $this->dbQuery($sql);
+            $count = $this->getCFGDef('count',0);
+            if ($count) {
+                $sql = "SELECT `st_rid`, COUNT(`st_rid`) AS cnt FROM {$table} WHERE `st_rid` IN ({$rid}) {$stAddWhereList} GROUP BY st_rid";
+                $_count = $this->dbQuery($sql);
+                while ($count = $this->modx->db->getRow($_count)) {
+                    $_rid = $count['st_rid'];
+                    $docs[$_rid]['count'] = $count['cnt'];
+                }
+            }
             while ($video = $this->modx->db->getRow($videos)) {
                 $_rid = $video['st_rid'];
-                $docs[$_rid]['videos'][] = $image;
+                $docs[$_rid]['videos'][] = $video;
             }
         }
         $this->_docs = $docs;
