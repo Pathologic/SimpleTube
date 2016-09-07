@@ -58,7 +58,7 @@ class SimpleTube extends \Panorama\Video {
 	}
 
 	/*Get rid of redundant data*/
-	public function getVideoDetails() {
+	public function getVideoDetails($width = 425, $height = 344) {
 		if (!empty($this->errorMessage)) {
 			$this->videoDetails = array (
 				'st_error' => implode(' ',$this->errorMessage)

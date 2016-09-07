@@ -16,6 +16,7 @@ if (isset($modx->pluginCache['SimpleTubeProps'])) {
 } else {
 	die();
 }
+$params = $modx->event->params;
 
 $roles = isset($params['role']) ? explode(',',$params['role']) : false;
 if ($roles && !in_array($_SESSION['mgrRole'], $roles)) die();
