@@ -30,7 +30,7 @@ class stController extends \SimpleTab\AbstractController {
     public function addRow()
     {
         $out = array();
-        $url = isset($_REQUEST['stUrl']) ? $_REQUEST['stUrl'] : '';
+        $url = isset($_POST['stUrl']) ? $_POST['stUrl'] : '';
         $url = strpos($url,'list=') ? $url : array_shift(explode('&', $url));
         if (empty($url)) {
             $out['success'] = false;
@@ -60,20 +60,20 @@ class stController extends \SimpleTab\AbstractController {
     }
     
     public function edit() {
-        $id = isset($_REQUEST['st_id']) ? (int)$_REQUEST['st_id'] : 0;
+        $id = isset($_POST['st_id']) ? (int)$_POST['st_id'] : 0;
         if ($id) {
             $out = $origin = $this->data->edit($id)->toArray();
         } else {
             die();
         }
         extract($this->params);
-        $url = array_shift(explode('&', $_REQUEST['st_videoUrl']));
+        $url = array_shift(explode('&', $_POST['st_videoUrl']));
         if ($url != $origin['st_videoUrl']) {
             $params = array('input' => $url, 'api' => '2', 'rid' => $origin['st_rid'], 'forceDownload' => $forceDownload, 'lang'=>$lang);
             $out = $this->modx->runSnippet('SimpleTube', $params);
             if (isset($out['st_error']) || !$this->data->isUnique($url,$this->rid)) $out = $origin;
         } else {
-            $thumbUrl = $_REQUEST['st_thumbUrl'];
+            $thumbUrl = $_POST['st_thumbUrl'];
             if ($out['st_thumbUrl'] != $thumbUrl) {
                 if (in_array(strtolower($this->FS->takeFileExt($thumbUrl)), array('gif', 'png', 'jpeg', 'jpg'))) {
                     $dest = str_replace ($this->FS->takeFileName($out['st_thumbUrl']),md5($out['st_thumbUrl'].time()),$out['st_thumbUrl']);
@@ -83,8 +83,8 @@ class stController extends \SimpleTab\AbstractController {
                     }
                 }
             }
-            $out['st_title'] = $_REQUEST['st_title'];
-            $out['st_isactive'] = (int)!!$_REQUEST['st_isactive'];
+            $out['st_title'] = $_POST['st_title'];
+            $out['st_isactive'] = (int)!!$_POST['st_isactive'];
         }
         $this->data->fromArray($out)->save();
         return $out;
@@ -92,7 +92,7 @@ class stController extends \SimpleTab\AbstractController {
 
     public function thumb()
     {
-        $url = $_REQUEST['url'];
+        $url = $_POST['url'];
         extract($this->params);
         $file = MODX_BASE_PATH . $thumbsCache . $url;
         if ($this->FS->checkFile($file)) {
