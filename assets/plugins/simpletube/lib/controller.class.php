@@ -92,7 +92,7 @@ class stController extends \SimpleTab\AbstractController {
 
     public function thumb()
     {
-        $url = $_POST['url'];
+        $url = $_GET['url'];
         extract($this->params);
         $file = MODX_BASE_PATH . $thumbsCache . $url;
         if ($this->FS->checkFile($file)) {
