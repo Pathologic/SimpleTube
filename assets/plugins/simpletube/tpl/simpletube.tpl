@@ -144,7 +144,7 @@ var stGridColumns = [ [
     }
 ] ];
 (function($){
-$(window).load(function(){
+$(window).on('load', function(){
     if ($('#st-tab')) {
     $('#st-tab.selected').trigger('click');    
 }
