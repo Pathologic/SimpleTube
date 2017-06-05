@@ -10,6 +10,7 @@ class stController extends \SimpleTab\AbstractController {
         parent::__construct($modx);
         $this->data = new \SimpleTube\stData($modx);
         $this->dlInit();
+        $this->dlParams['dateSource'] = 'date';
         $defaults = array(
             'thumbsCache' => $this->data->thumbsCache,
             'w' => 107,
@@ -37,7 +38,7 @@ class stController extends \SimpleTab\AbstractController {
             $out['message'] = 'empty_url';
         } elseif ($this->data->isUnique($url, $this->rid)) {
             extract($this->params);
-            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload, 'lang'=>$lang, 'ytApiKey'=>$ytApiKey);
+            $params = array('input' => $url, 'api' => '2', 'rid' => $this->rid, 'forceDownload' => $forceDownload, 'lang'=>$lang, 'ytApiKey'=>$ytApiKey, 'vkAccessToken'=>$vkAccessToken);
             $fields = $this->modx->runSnippet('SimpleTube', $params);
             if (is_array($fields) && !isset($fields['st_error'])) {
                 $fields = array_merge(array(
