@@ -21,3 +21,4 @@ _stLang['yes'] = 'Yes';
 _stLang['no'] = 'No';
 _stLang['save_document_to_continue'] = 'Save document to work with video gallery.';
 _stLang['server_error'] = 'Server error: ';
+_stLang['parse_error'] = 'Failed to process server response';

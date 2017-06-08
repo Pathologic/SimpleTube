@@ -9,6 +9,7 @@ class stController extends \SimpleTab\AbstractController {
     {
         parent::__construct($modx);
         $this->data = new \SimpleTube\stData($modx);
+        $this->data->setParams($this->params);
         $this->dlInit();
         $this->dlParams['dateSource'] = 'date';
         $defaults = array(
@@ -76,7 +77,7 @@ class stController extends \SimpleTab\AbstractController {
         } else {
             $thumbUrl = $_POST['st_thumbUrl'];
             if ($out['st_thumbUrl'] != $thumbUrl) {
-                if (in_array(strtolower($this->FS->takeFileExt($thumbUrl)), array('gif', 'png', 'jpeg', 'jpg'))) {
+                if (in_array(strtolower($this->FS->takeFileExt($thumbUrl),true), array('gif', 'png', 'jpeg', 'jpg'))) {
                     $dest = str_replace ($this->FS->takeFileName($out['st_thumbUrl']),md5($out['st_thumbUrl'].time()),$out['st_thumbUrl']);
                     if ($this->FS->copyFile($thumbUrl, $dest)) {
                         $this->data->deleteThumb($out['st_thumbUrl']);
@@ -87,7 +88,8 @@ class stController extends \SimpleTab\AbstractController {
             $out['st_title'] = $_POST['st_title'];
             $out['st_isactive'] = (int)!!$_POST['st_isactive'];
         }
-        $this->data->fromArray($out)->save();
+        if (!$this->data->fromArray($out)->save()) $out['isError'] = true;
+
         return $out;
     }
 

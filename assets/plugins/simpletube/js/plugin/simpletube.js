@@ -19,9 +19,7 @@
                         $('input', '#addVideo').val('');
                     }
                    grid.edatagrid('reload');
-                }).fail(function(xhr) {
-                    $.messager.alert(_stLang['error'],_stLang['server_error']+xhr.status+' '+xhr.statusText,'error');
-                });
+                }).fail(stGridHelper.handleAjaxError);
             }
             return false;
         },
@@ -79,11 +77,13 @@
                                 $.messager.alert(_stLang['error'],_stLang['cannot_delete']);
                             }
                         },'json'
-                    ).fail(function(xhr) {
-                        $.messager.alert(_stLang['error'],_stLang['server_error']+xhr.status+' '+xhr.statusText,'error');
-                    });
+                    ).fail(stGridHelper.handleAjaxError);
                 }
             });
+        },
+        handleAjaxError: function(xhr){
+            var message = xhr.status == 200 ? _stLang['parse_error'] : _stLang['server_error'] + xhr.status + ' ' + xhr.statusText;
+            $.messager.alert(_stLang['error'], message, 'error');
         },
         initGrid: function () {
             $('#SimpleTube').append(

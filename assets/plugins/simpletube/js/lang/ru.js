@@ -21,3 +21,4 @@ _stLang['yes'] = 'Да';
 _stLang['no'] = 'Нет';
 _stLang['save_document_to_continue'] = 'Для работы с видеогалереей необходимо сохранить документ.';
 _stLang['server_error'] = 'Ошибка сервера: ';
+_stLang['parse_error'] = 'Не удалось обработать ответ сервера';
