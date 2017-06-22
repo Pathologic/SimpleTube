@@ -69,6 +69,10 @@ class Vk  implements VideoInterface
 
             $videoObj = @json_decode($data);
 
+            if (!empty($videoObj->error->error_msg)) {
+                throw new \Exception($videoObj->error->error_msg);
+            }
+
             if (empty($videoObj->response->items)) {
                 throw new \Exception('Video Id not valid.');
             }
