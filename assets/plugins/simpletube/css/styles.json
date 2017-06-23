@@ -1,15 +1,11 @@
 {
   "styles": {
-    "EasyUICss" : {
-      "version":"1.4.1",
-      "src":"assets/js/easy-ui/themes/bootstrap/easyui.css"
-    },
-    "EasyUIIconsCss": {
-      "version":"1.4.1",
-      "src":"assets/js/easy-ui/themes/icon.css"
+    "EasyUIMODX" : {
+      "version":"1.5.2",
+      "src":"assets/js/easy-ui/themes/modx/easyui.css"
     },
     "SimpleTubeCss": {
-      "version":"0.0.9",
+      "version":"1.2.0",
       "src":"assets/plugins/simpletube/css/simpletube.css"
     }
   }

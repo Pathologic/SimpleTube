@@ -48,6 +48,11 @@ class SimpleTube extends \Panorama\Video {
             $options = array();
             if (!empty($cfg['ytApiKey']))
                 $options['youtube']['api_key'] = $cfg['ytApiKey'];
+            if (!empty($cfg['vkAccessToken'])) {
+                $options['vk'] = array(
+                      'accessToken' => $cfg['vkAccessToken']
+                );
+            }
         	parent::__construct($cfg['input'], $options);
         } catch (\Exception $e) {
         	$this->errorMessage[] = $this->translate($e->getMessage());
@@ -67,7 +72,7 @@ class SimpleTube extends \Panorama\Video {
 			$this->videoDetails = array(
 				'st_title'		=> (string) $this->getTitle(),
 				'st_thumbUrl'	=> (string) $this->getThumbnail(),
-				'st_embedUrl'	=> strpos($this->getEmbedUrl(),'list=') ? $this->getEmbedUrl() : array_shift(explode('?',(string) $this->getEmbedUrl())),
+				'st_embedUrl'	=> $this->getEmbedUrl(),
 				'st_service'	=> (string) $this->getService(),
 				'st_duration'	=> (string) $this->getDuration()
 			);

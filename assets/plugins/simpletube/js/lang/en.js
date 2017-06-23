@@ -1,4 +1,5 @@
 _stLang = [];
+_stLang['please_wait'] = 'Please, wait.';
 _stLang['empty_url'] = 'Empty URL.';
 _stLang['video_exists'] = 'This video already exists.';
 _stLang['cannot_delete'] = 'Cannot delete.';
@@ -19,3 +20,5 @@ _stLang['active'] = 'Active';
 _stLang['yes'] = 'Yes';
 _stLang['no'] = 'No';
 _stLang['save_document_to_continue'] = 'Save document to work with video gallery.';
+_stLang['server_error'] = 'Server error: ';
+_stLang['parse_error'] = 'Failed to process server response';
