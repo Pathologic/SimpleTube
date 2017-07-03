@@ -1,4 +1,5 @@
 _stLang = [];
+_stLang['please_wait'] = 'Подождите, пожалуйста.';
 _stLang['empty_url'] = 'Отсутствует ссылка.';
 _stLang['video_exists'] = 'Такое видео уже существует.';
 _stLang['cannot_delete'] = 'Невозможно удалить.';
@@ -19,3 +20,5 @@ _stLang['active'] = 'Активно';
 _stLang['yes'] = 'Да';
 _stLang['no'] = 'Нет';
 _stLang['save_document_to_continue'] = 'Для работы с видеогалереей необходимо сохранить документ.';
+_stLang['server_error'] = 'Ошибка сервера: ';
+_stLang['parse_error'] = 'Не удалось обработать ответ сервера';

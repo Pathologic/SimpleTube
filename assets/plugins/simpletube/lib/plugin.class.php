@@ -19,7 +19,6 @@ class stPlugin extends  \SimpleTab\Plugin {
 		$ph = array(
 			'lang'			=>	$this->lang_attribute,
 			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php',
-			'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
 			'site_url'		=>	$this->modx->config['site_url'],
 			'manager_url'	=>	MODX_MANAGER_URL,
 			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simpletube/ajax.php?mode=thumb&url=',
@@ -45,7 +44,9 @@ CREATE TABLE IF NOT EXISTS {$this->_table} (
 `st_index` int(10) NOT NULL default '0',
 `st_createdon` datetime NOT NULL, 
 PRIMARY KEY  (`st_id`),
-KEY `st_isactive` (`st_isactive`)
+KEY `st_isactive` (`st_isactive`),
+KEY `st_rid` (`st_rid`),
+KEY `st_index` (`st_index`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleTube plugin.';
 OUT;
 		return $this->modx->db->query($sql);

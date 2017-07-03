@@ -1,31 +1,39 @@
 {
 	"scripts": {
 		"EasyUI" : {
-			"version":"1.4.1",
+			"version":"1.5.2",
 			"src":"assets/js/easy-ui/jquery.easyui.min.js"
 		},
 		"datagrid-dnd" : {
-				"version":"1.4.1",
+				"version":"1.5.2",
 				"src":"assets/js/easy-ui/plugins/jquery.datagrid-dnd.js"
 		},
 		"edatagrid" : {
-			"version":"1.4.1",
+			"version":"1.5.2",
 			"src":"assets/js/easy-ui/plugins/jquery.edatagrid.js"
 		},
 	  	"easyui-lang-[+lang+]":{
-			"version":"1.4.1",
+			"version":"1.5.2",
 			"src":"assets/js/easy-ui/locale/easyui-lang-[+lang+].js"
 		},
 	  	"imageBrowser" : {
-			"version":"1.4.1",
+			"version":"1.5.2",
 			"src":"assets/js/easy-ui/editors/imageBrowser.js"
 	  	},
+        "EUIGrid": {
+          "version": "1.2.0",
+          "src": "assets/js/euigrid/js/euigrid.js"
+        },
+        "EUIGrid-lang-[+lang+]": {
+          "version": "1.2.0",
+          "src": "assets/js/euigrid/lang/[+lang+].js"
+        },
 	  	"SimpleTube" : {
-		  	"version":"0.0.9",
+		  	"version":"1.2.0",
 		  	"src":"assets/plugins/simpletube/js/plugin/simpletube.js"
 		},
         "SimpleTube-lang-[+lang+]":{
-          "version":"0.0.9",
+          "version":"1.2.0",
           "src":"assets/plugins/simpletube/js/lang/[+lang+].js"
         }
 	}
