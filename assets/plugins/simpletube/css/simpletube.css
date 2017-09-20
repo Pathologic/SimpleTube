@@ -5,6 +5,8 @@
     width:350px;
     margin-right: 5px;
     vertical-align: top;
+    height: 26px;
+    border: 1px solid #ccc;
 }
 #SimpleTube td[field="st_title"] > div {
     white-space:normal !important;
