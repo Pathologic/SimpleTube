@@ -120,7 +120,7 @@ class Vimeo implements VideoInterface
         if (!isset($this->embedUrl)) {
             $videoId = $this->getVideoId();
             $this->embedUrl =
-                "http://player.vimeo.com/video/" . $this->getVideoID();;
+                "https://player.vimeo.com/video/" . $this->getVideoID();;
         }
 
         return $this->embedUrl;
