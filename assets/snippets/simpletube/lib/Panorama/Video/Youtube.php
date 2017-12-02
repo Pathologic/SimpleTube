@@ -185,7 +185,7 @@ class Youtube  implements VideoInterface
     {
         $this->embedUrl = '';
         if (empty($this->embedUrl))
-            $this->embedUrl = 'http://www.youtube.com/embed/'.$this->getVideoID();
+            $this->embedUrl = 'https://www.youtube.com/embed/'.$this->getVideoID();
         if ($listId = $this->getListIdFromUrl($this->url)) $this->embedUrl .= '?list='.$listId;
         return $this->embedUrl;
     }
