@@ -106,6 +106,7 @@
                 updateUrl: stConfig.url+'?mode=edit',
                 idField: 'st_id',
                 indexField: 'st_index',
+                parentField: 'st_rid',
                 sortName: 'st_index',
                 sortOrder: 'DESC',
                 queryParams: {st_rid: stConfig.rid},
