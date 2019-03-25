@@ -69,7 +69,7 @@ class Youtube  implements VideoInterface
 
             $videoObj = @json_decode($data);
             if (empty($videoObj->items)) {
-                throw new \Exception('Video Id not valid.');
+                throw new \Exception(!empty($videoObj->error) ? $videoObj->error->message : 'Unable to get data from Youtube');
             }
 
         }
