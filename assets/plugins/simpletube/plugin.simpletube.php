@@ -10,7 +10,7 @@ if ($e->name == 'OnDocFormRender') {
     } else {
         $output = $plugin->renderEmpty();
     }
-	if ($output) $e->output($output);
+	if ($output) $modx->event->addOutput($output);
 }
 if ($e->name == 'OnEmptyTrash') {
 	if (empty($ids)) return;
