@@ -1,5 +1,9 @@
 {
 	"scripts": {
+        "SimpleTube-lang-en":{
+          "version":"0.0.9",
+          "src":"assets/plugins/simpletube/js/lang/en.js"
+        },
         "SimpleTube-lang-[+lang+]":{
           "version":"0.0.9",
           "src":"assets/plugins/simpletube/js/lang/[+lang+].js"
