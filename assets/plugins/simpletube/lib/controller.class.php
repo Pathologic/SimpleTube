@@ -77,7 +77,7 @@ class stController extends \SimpleTab\AbstractController {
         } else {
             $thumbUrl = $_POST['st_thumbUrl'];
             if ($out['st_thumbUrl'] != $thumbUrl) {
-                if (in_array(strtolower($this->FS->takeFileExt($thumbUrl),true), array('gif', 'png', 'jpeg', 'jpg'))) {
+                if (in_array($this->FS->takeFileExt($thumbUrl, true), array('gif', 'png', 'jpeg', 'jpg'))) {
                     $dest = str_replace ($this->FS->takeFileName($out['st_thumbUrl']),md5($out['st_thumbUrl'].time()),$out['st_thumbUrl']);
                     if ($this->FS->copyFile($thumbUrl, $dest)) {
                         $this->data->deleteThumb($out['st_thumbUrl']);
