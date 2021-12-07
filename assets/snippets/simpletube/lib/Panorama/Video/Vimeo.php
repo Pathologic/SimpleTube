@@ -93,7 +93,9 @@ class Vimeo implements VideoInterface
         if (!isset($this->thumbnail)) {
             $this->thumbnail = (string)$this->feed['thumbnail_large'];
         }
-
+        if (substr($this->thumbnail, -4, 4) != '.jpg') {
+			$this->thumbnail .= '.jpg';
+		}
         return $this->thumbnail;
     }
 
