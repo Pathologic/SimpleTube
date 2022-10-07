@@ -30,7 +30,7 @@ $params = array_merge(array(
 
 if(!class_exists("DLstLister", false)){
     class DLstLister{
-        public static function prepare(array $data = array(), DocumentParser $modx, $_DL, prepare_DL_Extender $_extDocLister){
+        public static function prepare(array $data, DocumentParser $modx, $_DL, prepare_DL_Extender $_extDocLister){
             $imageField = $_DL->getCfgDef('imageField');
             $thumbOptions = $_DL->getCfgDef('thumbOptions');
             $thumbSnippet = $_DL->getCfgDef('thumbSnippet');
