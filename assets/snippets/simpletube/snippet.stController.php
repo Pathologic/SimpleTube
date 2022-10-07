@@ -13,7 +13,7 @@ $params = array_merge(array(
 ), $modx->event->params);
 if(!class_exists("DLstController", false)){
     class DLstController{
-        public static function prepare(array $data = array(), DocumentParser $modx, $_DocLister, prepare_DL_Extender $_extDocLister){
+        public static function prepare(array $data, DocumentParser $modx, $_DocLister, prepare_DL_Extender $_extDocLister){
             if (isset($data['videos'])) {
                 $wrapper='';
                 $imageField = $_DocLister->getCfgDef('imageField','st_thumbUrl');
