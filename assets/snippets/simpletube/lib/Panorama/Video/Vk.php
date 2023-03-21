@@ -56,7 +56,7 @@ class Vk  implements VideoInterface
         if (!isset($this->feed)) {
             $videoId = $this->getVideoID();
 
-            $url = "https://api.vk.com/method/video.get?v=5.64&videos={$videoId}&access_token={$accessToken}";
+            $url = "https://api.vk.com/method/video.get?v=5.131&videos={$videoId}&access_token={$accessToken}";
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
@@ -160,14 +160,7 @@ class Vk  implements VideoInterface
      */
     public function getThumbnail()
     {
-        $thumbnail = '';
-        foreach (array('photo_800','photo_640','photo_320') as $size) {
-            if (isset($this->feed->$size)) {
-                $thumbnail = $this->feed->$size;
-                break;
-            }
-        }
-
+        $thumbnail = end($this->feed->image)->url;
         return $thumbnail;
     }
 
