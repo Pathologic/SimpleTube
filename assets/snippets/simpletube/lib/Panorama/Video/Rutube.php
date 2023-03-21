@@ -92,7 +92,7 @@ class Rutube implements VideoInterface
             $this->embedUrl = $rtInfo->embed_url;
         }
 
-        return $this->embedUrl;
+        return str_replace("http://","https://",$this->embedUrl);
     }
 
     /*
