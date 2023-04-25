@@ -33,7 +33,8 @@ class stController extends \SimpleTab\AbstractController {
     {
         $out = array();
         $url = isset($_POST['stUrl']) ? $_POST['stUrl'] : '';
-        $url = strpos($url,'list=') ? $url : array_shift(explode('&', $url));
+        $url_parts = explode('&', $url);
+        $url = strpos($url, 'list=') ? $url : array_shift($url_parts);
         if (empty($url)) {
             $out['success'] = false;
             $out['message'] = 'empty_url';
